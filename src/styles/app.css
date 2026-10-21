@@ -1983,3 +1983,32 @@ a {
     animation: none;
   }
 }
+
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  padding: 0 0.7rem;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.logout-btn:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+@media (max-width: 560px) {
+  .logout-btn span {
+    display: none;
+  }
+  .logout-btn {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+}

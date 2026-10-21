@@ -1,5 +1,7 @@
-import { NavLink, Outlet } from "react-router";
-import { useAppSelector } from "../app/hooks";
+import { NavLink, Outlet, useNavigate } from "react-router";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { loggedOut } from "../features/auth/authSlice";
+import { salir } from "../nube/cuenta";
 import { selectCan, selectCurrentUser } from "../features/auth/selectors";
 import { selectCartCount } from "../features/cart/selectors";
 import { selectCurrentShift } from "../features/cash/selectors";
@@ -22,6 +24,14 @@ export function Layout() {
   const user = useAppSelector(selectCurrentUser);
   const can = useAppSelector(selectCan);
   const nube = useAppSelector((s) => s.nube);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const cerrarSesion = async () => {
+    // En la nube se cierra la sesión de Supabase y la app vuelve sola a la pantalla de entrar.
+    if (nube.modo === "nube") return void (await salir());
+    dispatch(loggedOut());
+    navigate("/entrar", { replace: true });
+  };
   const nav = NAV.filter((item) => item.to !== "/reportes" || can("reportes"));
   const initials = (user?.name ?? "")
     .split(" ")
@@ -63,6 +73,10 @@ export function Layout() {
             </span>
             <span className="user-chip__name">{user?.name.split(" ")[0]}</span>
           </NavLink>
+          <button type="button" className="logout-btn" onClick={() => void cerrarSesion()} aria-label="Cerrar sesión" title="Cerrar sesión">
+            <Icon name="salir" size={18} />
+            <span>Salir</span>
+          </button>
         </div>
       </header>
 
