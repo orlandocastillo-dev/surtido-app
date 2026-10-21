@@ -2,7 +2,9 @@
 
 Aplicación web para el tendero: registra ventas en segundos, descuenta el inventario, lleva el **fiado** de los clientes, cuadra la **caja** al final del día y muestra **reportes** de ventas y ganancia. Funciona en el celular y en el computador, y **sigue funcionando sin internet**.
 
-Es la app real detrás de la landing del proyecto 03 (Surtido).
+El sitio tiene dos partes: la página de presentación del producto en la raíz (HTML, CSS y JavaScript sin frameworks, en `landing/`) y la app en `/app/`. Desde la presentación, **"Abrir la app"** lleva a la tienda, y **"Probar con la tienda de ejemplo"** entra sin registrarse.
+
+**En vivo:** https://surtido-app-tan.vercel.app
 
 ![Vender en escritorio](docs/captura-vender.png)
 
@@ -103,20 +105,20 @@ Requiere Node.js 20 o superior. En Windows con PowerShell usa `npm.cmd` si `npm`
 npm install
 npm run dev       # http://localhost:5173
 npm test
-npm run build     # genera dist/, lista para publicar
+npm run build     # genera dist/: la presentación en la raíz y la app en dist/app/
 ```
 
-La primera vez pide **crear la tienda**: nombre, tu usuario (correo o celular) y una contraseña. Ahí eliges si empezar con la tienda de ejemplo o en blanco.
+La primera vez pide **crear la tienda**: nombre, tu usuario (correo o celular) y una contraseña. Ahí eliges si empezar con la tienda de ejemplo o en blanco. Para mirarla sin registrarse está el botón **"Probar con la tienda de ejemplo"**.
 
-Para generar la versión portátil que usa la landing (un solo `index.html` que abre con doble clic):
+Para generar la versión portátil (un solo `index.html` que abre con doble clic):
 
 ```bash
-npm run build:portable   # escribe en ../03-landing-html-css-js-surtido/app/
+npm run build:portable   # escribe en portable/index.html
 ```
 
 ## Publicarla
 
-`npm run build` genera la carpeta `dist/`, que se puede subir tal cual a Netlify (arrastrar y soltar), Vercel o GitHub Pages. Desde el celular, el navegador ofrece **"Agregar a la pantalla de inicio"** y queda como una app más.
+Está publicada en Vercel, que vuelve a publicar sola con cada cambio en `main`. `npm run build` genera la carpeta `dist/`, que también se puede subir tal cual a Netlify o GitHub Pages. Desde el celular, el navegador ofrece **"Agregar a la pantalla de inicio"** y queda como una app más.
 
 ## Próximos pasos
 

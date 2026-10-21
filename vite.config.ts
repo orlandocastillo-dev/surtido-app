@@ -6,7 +6,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig(({ mode }) => {
   /**
    * Modo "portable": toda la app en un solo index.html que se abre con doble clic (file://).
-   * Se genera dentro de la landing (proyecto 03) para que "Entrar" abra la app sin servidor.
+   * Queda en portable/index.html.
    */
   const portable = mode === "portable";
 
@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
           }),
     ],
     build: portable
-      ? { outDir: "../03-landing-html-css-js-surtido/app", emptyOutDir: true, copyPublicDir: false }
+      ? { outDir: "portable", emptyOutDir: true, copyPublicDir: false }
       : undefined,
     test: {
       environment: "jsdom",

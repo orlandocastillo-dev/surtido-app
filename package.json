@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node scripts/clean.mjs && vite build --outDir dist/app && node scripts/landing.mjs",
     "preview": "vite preview",
     "lint": "oxlint src",
     "typecheck": "tsc -b --noEmit",
