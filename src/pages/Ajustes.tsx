@@ -16,6 +16,8 @@ import { addUser, changePassword, MIN_PASSWORD } from "../features/auth/thunks";
 import { settingsUpdated } from "../features/settings/settingsSlice";
 import { downloadFile } from "../lib/csv";
 import { dayKey } from "../lib/dates";
+import { refrescarMiembros, sincronizarAhora } from "../nube/conexion";
+import { CLAVE_MINIMA_NUBE, cambiarClaveDe, cambiarMiClave, correoParaEntrar, crearVendedor, quitarVendedor, salir } from "../nube/cuenta";
 
 export function Ajustes() {
   const dispatch = useAppDispatch();
@@ -28,6 +30,7 @@ export function Ajustes() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [confirm, setConfirm] = useState<"ejemplo" | "vacio" | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
+  const enNube = useAppSelector((s) => s.nube.modo === "nube");
 
   if (!user) return null;
   const isOwner = can("ajustes");
@@ -59,7 +62,9 @@ export function Ajustes() {
           <button
             type="button"
             className="btn"
-            onClick={() => {
+            onClick={async () => {
+              // En la nube se cierra la sesión de Supabase y la app vuelve sola a la pantalla de entrar.
+              if (enNube) return void (await salir());
               dispatch(loggedOut());
               navigate("/entrar", { replace: true });
             }}
@@ -68,6 +73,8 @@ export function Ajustes() {
           </button>
         </div>
       </section>
+
+      {enNube && <EstadoNube />}
 
       {isOwner && (
         <>
@@ -93,8 +100,10 @@ export function Ajustes() {
           <section className="card">
             <h2 className="section-title">Copia de seguridad</h2>
             <p className="muted">
-              Los datos se guardan en este navegador. Descarga una copia de vez en cuando para no perder nada si cambias de
-              celular o borras el historial. La copia no incluye las contraseñas.
+              {enNube
+                ? "Tu tienda está guardada en la nube: si cambias de celular, solo entras con tu usuario. Igual puedes descargar una copia para tus archivos."
+                : "Los datos se guardan en este navegador. Descarga una copia de vez en cuando para no perder nada si cambias de celular o borras el historial."}{" "}
+              La copia no incluye las contraseñas.
             </p>
             <div className="row-actions">
               <button
@@ -184,7 +193,9 @@ function UsersSection() {
   const toast = useToast();
   const users = useAppSelector(selectUsers);
   const me = useAppSelector(selectCurrentUser);
+  const enNube = useAppSelector((s) => s.nube.modo === "nube");
   const [adding, setAdding] = useState(false);
+  const [resetting, setResetting] = useState<{ id: string; name: string } | null>(null);
 
   return (
     <section className="card">
@@ -210,22 +221,58 @@ function UsersSection() {
               </p>
             </div>
             {u.id !== me?.id && (
-              <button
-                type="button"
-                className="link small"
-                onClick={() => {
-                  dispatch(userRemoved(u.id));
-                  toast(`${u.name} ya no tiene acceso`);
-                }}
-              >
-                Quitar acceso
-              </button>
+              <span className="users__actions">
+                {enNube && (
+                  <button type="button" className="link small" onClick={() => setResetting({ id: u.id, name: u.name })}>
+                    Nueva contraseña
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="link small"
+                  onClick={async () => {
+                    if (enNube) {
+                      const r = await quitarVendedor(u.id);
+                      if (!r.ok) return toast(r.message, "error");
+                      await refrescarMiembros().catch(() => undefined);
+                    } else dispatch(userRemoved(u.id));
+                    toast(`${u.name} ya no tiene acceso`);
+                  }}
+                >
+                  Quitar acceso
+                </button>
+              </span>
             )}
           </li>
         ))}
       </ul>
       <Modal title="Nuevo usuario" open={adding} onClose={() => setAdding(false)}>
         {adding && <NewUserForm onDone={() => setAdding(false)} />}
+      </Modal>
+      <Modal title={`Nueva contraseña para ${resetting?.name ?? ""}`} open={!!resetting} onClose={() => setResetting(null)}>
+        {resetting && (
+          <form
+            className="form"
+            noValidate
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const clave = String(new FormData(e.currentTarget).get("clave"));
+              const r = await cambiarClaveDe(resetting.id, clave);
+              if (!r.ok) return toast(r.message, "error");
+              toast(`Listo. Dale la contraseña nueva a ${resetting.name}.`);
+              setResetting(null);
+            }}
+          >
+            <div className="field">
+              <label htmlFor="rc-clave">Contraseña nueva</label>
+              <input id="rc-clave" name="clave" type="text" autoComplete="off" autoFocus />
+              <p className="muted small">Mínimo {CLAVE_MINIMA_NUBE} caracteres. Con esto la persona vuelve a entrar.</p>
+            </div>
+            <button type="submit" className="btn btn--primary btn--block">
+              Cambiar contraseña
+            </button>
+          </form>
+        )}
       </Modal>
     </section>
   );
@@ -234,14 +281,22 @@ function UsersSection() {
 function NewUserForm({ onDone }: { onDone: () => void }) {
   const dispatch = useAppDispatch();
   const toast = useToast();
+  const enNube = useAppSelector((s) => s.nube.modo === "nube");
   const [role, setRole] = useState<Role>("vendedor");
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = String(data.get("nombre"));
-    const result = await dispatch(addUser(name, String(data.get("usuario")), String(data.get("clave")), role));
+    setBusy(true);
+    // En la nube el usuario lo crea una función del servidor (necesita la llave de servicio).
+    const result = enNube
+      ? await crearVendedor(name, String(data.get("usuario")), String(data.get("clave")), role)
+      : await dispatch(addUser(name, String(data.get("usuario")), String(data.get("clave")), role));
+    if (result.ok && enNube) await refrescarMiembros().catch(() => undefined);
+    setBusy(false);
     if (result.ok) {
       toast(`${name} puede entrar con su usuario`);
       onDone();
@@ -261,7 +316,7 @@ function NewUserForm({ onDone }: { onDone: () => void }) {
       <div className="field">
         <label htmlFor="nu-clave">Contraseña inicial</label>
         <input id="nu-clave" name="clave" type="text" autoComplete="off" />
-        <p className="muted small">Mínimo {MIN_PASSWORD} caracteres. La persona la puede cambiar después.</p>
+        <p className="muted small">Mínimo {enNube ? CLAVE_MINIMA_NUBE : MIN_PASSWORD} caracteres. La persona la puede cambiar después.</p>
       </div>
       <div className="segmented" role="group" aria-label="Rol">
         <button type="button" aria-pressed={role === "vendedor"} onClick={() => setRole("vendedor")}>
@@ -278,8 +333,8 @@ function NewUserForm({ onDone }: { onDone: () => void }) {
       )}
       <div className="form-actions">
         <span className="spacer" />
-        <button type="submit" className="btn btn--primary">
-          Crear usuario
+        <button type="submit" className="btn btn--primary" disabled={busy}>
+          {busy ? "Creando…" : "Crear usuario"}
         </button>
       </div>
     </form>
@@ -289,6 +344,8 @@ function NewUserForm({ onDone }: { onDone: () => void }) {
 function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const dispatch = useAppDispatch();
   const toast = useToast();
+  const enNube = useAppSelector((s) => s.nube.modo === "nube");
+  const me = useAppSelector(selectCurrentUser);
   const [error, setError] = useState<string | null>(null);
 
   return (
@@ -308,7 +365,9 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
             e.preventDefault();
             const data = new FormData(e.currentTarget);
             if (data.get("nueva") !== data.get("nueva2")) return setError("Las contraseñas nuevas no coinciden.");
-            const result = await dispatch(changePassword(String(data.get("actual")), String(data.get("nueva"))));
+            const result = enNube
+              ? await cambiarMiClave(correoParaEntrar(me?.login ?? "") ?? "", String(data.get("actual")), String(data.get("nueva")))
+              : await dispatch(changePassword(String(data.get("actual")), String(data.get("nueva"))));
             if (result.ok) {
               toast("Contraseña actualizada");
               onClose();
@@ -338,5 +397,40 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
         </form>
       )}
     </Modal>
+  );
+}
+
+/** Si la tienda está al día con la nube, o cuántos cambios faltan por subir. */
+function EstadoNube() {
+  const nube = useAppSelector((s) => s.nube);
+  const [busy, setBusy] = useState(false);
+  const hace = nube.ultimaSincronizacion ? new Date(nube.ultimaSincronizacion).toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit" }) : null;
+  const texto = !nube.enLinea
+    ? `Sin internet. ${nube.pendientes ? `${nube.pendientes} ${nube.pendientes === 1 ? "cambio queda" : "cambios quedan"} en este equipo y suben solos al volver la conexión.` : "Puedes seguir vendiendo normal."}`
+    : nube.pendientes
+      ? `Subiendo ${nube.pendientes} ${nube.pendientes === 1 ? "cambio" : "cambios"}…`
+      : `Todo guardado en la nube${hace ? ` (${hace})` : ""}. Los demás equipos de la tienda ven lo mismo.`;
+  return (
+    <section className="card nube-estado" data-estado={!nube.enLinea ? "sin-internet" : nube.pendientes ? "subiendo" : "al-dia"}>
+      <div>
+        <h2 className="section-title">Nube</h2>
+        <p className="muted small" role="status">
+          {texto}
+        </p>
+        {nube.error && <p className="form-error small">{nube.error}</p>}
+      </div>
+      <button
+        type="button"
+        className="btn btn--small"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          await sincronizarAhora();
+          setBusy(false);
+        }}
+      >
+        {busy ? "Sincronizando…" : "Sincronizar ahora"}
+      </button>
+    </section>
   );
 }

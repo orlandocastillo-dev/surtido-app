@@ -21,6 +21,7 @@ export function Layout() {
   const shift = useAppSelector(selectCurrentShift);
   const user = useAppSelector(selectCurrentUser);
   const can = useAppSelector(selectCan);
+  const nube = useAppSelector((s) => s.nube);
   const nav = NAV.filter((item) => item.to !== "/reportes" || can("reportes"));
   const initials = (user?.name ?? "")
     .split(" ")
@@ -48,6 +49,11 @@ export function Layout() {
           </div>
         </div>
         <div className="topbar__right">
+          {nube.modo === "nube" && (!nube.enLinea || nube.pendientes > 0) && (
+            <NavLink to="/ajustes" className={`sync-pill ${nube.enLinea ? "is-uploading" : "is-offline"}`} title="Estado de la nube">
+              {nube.enLinea ? `Subiendo ${nube.pendientes}` : nube.pendientes ? `Sin internet · ${nube.pendientes} por subir` : "Sin internet"}
+            </NavLink>
+          )}
           <NavLink to="/caja" className={`shift-pill ${shift ? "is-open" : ""}`}>
             {shift ? "Caja abierta" : "Caja cerrada"}
           </NavLink>

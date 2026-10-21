@@ -10,10 +10,11 @@ import { Provider } from "react-redux";
 import { createHashRouter, Navigate, RouterProvider } from "react-router";
 import { loadState, persist } from "./app/persistence";
 import { makeStore } from "./app/store";
+import { iniciarNube } from "./nube/conexion";
 import { RequireAuth, RequirePermission } from "./components/Guards";
 import { Layout } from "./components/Layout";
 import { ToastProvider } from "./components/Toast";
-import { Entrar, Registro } from "./pages/Acceso";
+import { Entrar, NuevaClave, Recuperar, Registro } from "./pages/Acceso";
 import { Ajustes } from "./pages/Ajustes";
 import { Caja } from "./pages/Caja";
 import { Cliente } from "./pages/Cliente";
@@ -25,11 +26,15 @@ import { Vender } from "./pages/Vender";
 // Primera vez: el estado arranca vacío y la app pide crear la tienda (con opción de datos de ejemplo).
 const store = makeStore(loadState());
 persist(store);
+// Con Supabase configurado, se revisa si hay una sesión guardada y se abre esa tienda (src/nube/conexion.ts).
+void iniciarNube(store);
 
 // HashRouter: funciona en cualquier hosting estático (GitHub Pages, Netlify) sin configurar redirecciones.
 const router = createHashRouter([
   { path: "/entrar", element: <Entrar /> },
   { path: "/registro", element: <Registro /> },
+  { path: "/recuperar", element: <Recuperar /> },
+  { path: "/nueva-clave", element: <NuevaClave /> },
   {
     path: "/",
     element: (

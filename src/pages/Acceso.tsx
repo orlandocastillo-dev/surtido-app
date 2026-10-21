@@ -1,12 +1,17 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
+import { nubeDisponible } from "../nube/cliente";
+import { CLAVE_MINIMA_NUBE, cambiarMiClave, correoParaEntrar, crearCuentaDueno, entrar as entrarNube, recuperarClave, reenviarConfirmacion } from "../nube/cuenta";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectCurrentUser, selectHasAccount } from "../features/auth/selectors";
 import { Icon } from "../components/Icon";
 import { PasswordInput } from "../components/PasswordInput";
 import { DEMO_LOGIN, enterDemo, login, MIN_PASSWORD, registerStore, type RegisterInput } from "../features/auth/thunks";
 
-function AuthShell({ title, subtitle, children, footer }: { title: string; subtitle: string; children: ReactNode; footer: ReactNode }) {
+const NOTA_LOCAL = "Tus datos se guardan en este dispositivo y funcionan sin internet.";
+const NOTA_NUBE = "Tu tienda queda guardada en la nube y en este equipo: sigue funcionando sin internet.";
+
+function AuthShell({ title, subtitle, children, footer, note }: { title: string; subtitle: string; children: ReactNode; footer: ReactNode; note?: string }) {
   return (
     <main className="auth">
       {/* La app vive en /app/ y la presentación en la raíz; en el archivo portátil no hay a dónde volver. */}
@@ -28,7 +33,7 @@ function AuthShell({ title, subtitle, children, footer }: { title: string; subti
         {children}
         <p className="auth__footer">{footer}</p>
       </section>
-      <p className="auth__note">Tus datos se guardan en este dispositivo y funcionan sin internet.</p>
+      <p className="auth__note">{note ?? (nubeDisponible() ? NOTA_NUBE : NOTA_LOCAL)}</p>
     </main>
   );
 }
@@ -94,6 +99,11 @@ function DemoButton({ onError, top = false }: { onError: (message: string) => vo
 }
 
 export function Entrar() {
+  if (nubeDisponible()) return <EntrarNube />;
+  return <EntrarLocal />;
+}
+
+function EntrarLocal() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector(selectCurrentUser);
@@ -144,6 +154,11 @@ export function Entrar() {
 }
 
 export function Registro() {
+  if (nubeDisponible()) return <RegistroNube />;
+  return <RegistroLocal />;
+}
+
+function RegistroLocal() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const hasAccount = useAppSelector(selectHasAccount);
@@ -222,6 +237,266 @@ export function Registro() {
         )}
         <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy}>
           {busy ? "Creando…" : "Crear mi tienda"}
+        </button>
+      </form>
+    </AuthShell>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Con Supabase: la tienda y sus usuarios viven en la nube
+// ---------------------------------------------------------------------------
+
+/** Mientras la app abre la tienda después de entrar. */
+function useAbriendo() {
+  const user = useAppSelector(selectCurrentUser);
+  const iniciando = useAppSelector((s) => s.nube.estado === "iniciando");
+  const errorNube = useAppSelector((s) => s.nube.error);
+  return { user, iniciando, errorNube };
+}
+
+function EntrarNube() {
+  const navigate = useNavigate();
+  const { user, iniciando, errorNube } = useAbriendo();
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  if (user) return <Navigate to="/" replace />;
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    setBusy(true);
+    setError(null);
+    const result = await entrarNube(String(data.get("usuario")), String(data.get("clave")));
+    setBusy(false);
+    if (!result.ok) setError(result.message);
+    // Si entra bien, la app abre la tienda sola (src/nube/conexion.ts) y esta pantalla redirige.
+  };
+  const abriendo = busy || iniciando;
+
+  return (
+    <AuthShell
+      title="Entrar"
+      subtitle="Con tu correo o tu celular."
+      footer={
+        <>
+          ¿Aún no tienes tienda? <Link to="/registro">Créala gratis</Link>
+        </>
+      }
+    >
+      <form className="form" onSubmit={submit} noValidate>
+        <Field id="usuario" label="Correo o celular" autoComplete="username" inputMode="email" autoFocus required />
+        <Field id="clave" label="Contraseña" type="password" autoComplete="current-password" required />
+        {(error || errorNube) && (
+          <p className="form-error" role="alert">
+            {error ?? errorNube}
+          </p>
+        )}
+        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={abriendo}>
+          {iniciando ? "Abriendo tu tienda…" : busy ? "Entrando…" : "Entrar"}
+        </button>
+        <p className="muted small center">
+          <button type="button" className="link" onClick={() => navigate("/recuperar")}>
+            ¿Olvidaste la contraseña?
+          </button>
+          <br />
+          Si eres vendedor, pídele al dueño que te ponga una nueva.
+        </p>
+      </form>
+      <DemoButton onError={setError} />
+    </AuthShell>
+  );
+}
+
+function RegistroNube() {
+  const { user, iniciando } = useAbriendo();
+  const hasLocalData = useAppSelector((s) => s.nube.modo === "local" && !s.auth.users.some((u) => u.login === DEMO_LOGIN) && (s.products.ids.length > 0 || s.sales.list.length > 0));
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+  const [start, setStart] = useState<RegisterInput["start"]>(hasLocalData ? "conservar" : "ejemplo");
+  const [confirmar, setConfirmar] = useState<string | null>(null);
+
+  if (user) return <Navigate to="/" replace />;
+  if (confirmar) return <ConfirmarCorreo email={confirmar} />;
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const tienda = String(data.get("tienda")).trim();
+    const nombre = String(data.get("nombre")).trim();
+    if (tienda.length < 3) return setErrors({ storeName: "Escribe el nombre de la tienda." });
+    if (nombre.length < 3) return setErrors({ name: "Escribe tu nombre." });
+    if (data.get("clave") !== data.get("clave2")) return setErrors({ clave2: "Las contraseñas no coinciden." });
+    setBusy(true);
+    setErrors({});
+    const result = await crearCuentaDueno(String(data.get("usuario")), String(data.get("clave")), { tienda, nombre, inicio: start });
+    setBusy(false);
+    if (!result.ok) return setErrors({ [result.field ?? "general"]: result.message });
+    if (result.confirmar) setConfirmar(String(data.get("usuario")).trim().toLowerCase());
+  };
+
+  const options: { id: RegisterInput["start"]; title: string; text: string }[] = [
+    ...(hasLocalData ? [{ id: "conservar" as const, title: "Subir lo que tengo aquí", text: "Los productos y ventas de este dispositivo pasan a la nube." }] : []),
+    { id: "ejemplo", title: "Tienda de ejemplo", text: "32 productos, clientes y una semana de ventas para explorar." },
+    { id: "vacio", title: "Empezar en blanco", text: "Sin productos ni ventas. Para usarla de verdad." },
+  ];
+
+  return (
+    <AuthShell
+      title="Crea tu tienda"
+      subtitle="Serás el dueño. Después agregas a tus vendedores, cada uno con su usuario, y todos ven la misma tienda."
+      footer={
+        <>
+          Gratis, sin tarjeta. <Link to="/entrar">Ya tengo cuenta</Link>
+        </>
+      }
+    >
+      <DemoButton top onError={(message) => setErrors({ general: message })} />
+      <form className="form" onSubmit={submit} noValidate>
+        <Field id="tienda" label="Nombre de la tienda" placeholder="Tienda Doña Rosa" error={errors.storeName} autoFocus />
+        <Field id="nombre" label="Tu nombre" autoComplete="name" error={errors.name} />
+        <Field id="usuario" label="Tu correo" type="email" autoComplete="email" inputMode="email" error={errors.login} hint="Te llega un enlace para confirmar la cuenta." />
+        <div className="field-row">
+          <Field id="clave" label="Contraseña" type="password" autoComplete="new-password" error={errors.password} hint={`Mínimo ${CLAVE_MINIMA_NUBE} caracteres.`} />
+          <Field id="clave2" label="Repítela" type="password" autoComplete="new-password" error={errors.clave2} />
+        </div>
+
+        <fieldset className="field start-options">
+          <legend>¿Cómo quieres empezar?</legend>
+          {options.map((o) => (
+            <label key={o.id} className={`option ${start === o.id ? "is-active" : ""}`}>
+              <input type="radio" name="inicio" value={o.id} checked={start === o.id} onChange={() => setStart(o.id)} />
+              <span>
+                <strong>{o.title}</strong>
+                <span className="muted small">{o.text}</span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+
+        {errors.general && (
+          <p className="form-error" role="alert">
+            {errors.general}
+          </p>
+        )}
+        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy || iniciando}>
+          {iniciando ? "Preparando tu tienda…" : busy ? "Creando…" : "Crear mi tienda"}
+        </button>
+      </form>
+    </AuthShell>
+  );
+}
+
+function ConfirmarCorreo({ email }: { email: string }) {
+  const [espera, setEspera] = useState(60);
+  const [aviso, setAviso] = useState<string | null>(null);
+  useEffect(() => {
+    if (espera <= 0) return;
+    const t = setTimeout(() => setEspera((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [espera]);
+
+  return (
+    <AuthShell title="Confirma tu correo" subtitle="Ya casi." footer={<Link to="/entrar">Ya lo confirmé, quiero entrar</Link>}>
+      <div className="auth__mensaje">
+        <span className="auth__icono" aria-hidden="true">
+          <Icon name="check" size={26} />
+        </span>
+        <p>
+          Te enviamos un enlace a <strong>{email}</strong>. Ábrelo desde este dispositivo y tu tienda se crea sola con lo que elegiste.
+        </p>
+        <p className="muted small">Si no te llega en un par de minutos, revisa la carpeta de spam.</p>
+        {aviso && <p className="muted small">{aviso}</p>}
+        <button
+          type="button"
+          className="btn btn--block"
+          disabled={espera > 0}
+          onClick={async () => {
+            const r = await reenviarConfirmacion(email);
+            setAviso(r.ok ? "Listo, te lo enviamos otra vez." : r.message);
+            setEspera(60);
+          }}
+        >
+          {espera > 0 ? `Reenviar en ${espera} s` : "Reenviar el correo"}
+        </button>
+      </div>
+    </AuthShell>
+  );
+}
+
+export function Recuperar() {
+  const [enviado, setEnviado] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  if (enviado) {
+    return (
+      <AuthShell title="Revisa tu correo" subtitle="Te mandamos un enlace." footer={<Link to="/entrar">Volver a entrar</Link>}>
+        <p>
+          Si hay una tienda con <strong>{enviado}</strong>, te llegará un enlace para poner una contraseña nueva. Puede tardar un par de minutos; mira también en spam.
+        </p>
+      </AuthShell>
+    );
+  }
+
+  return (
+    <AuthShell title="¿Olvidaste la contraseña?" subtitle="Escribe el correo con el que creaste la tienda." footer={<Link to="/entrar">Volver a entrar</Link>}>
+      <form
+        className="form"
+        noValidate
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const email = String(new FormData(e.currentTarget).get("correo"));
+          setBusy(true);
+          const r = await recuperarClave(email);
+          setBusy(false);
+          if (r.ok) setEnviado(email.trim().toLowerCase());
+          else setError(r.message);
+        }}
+      >
+        <Field id="correo" label="Correo" type="email" autoComplete="email" inputMode="email" error={error ?? undefined} autoFocus />
+        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy}>
+          {busy ? "Enviando…" : "Enviar enlace"}
+        </button>
+        <p className="muted small center">Los vendedores no reciben correo: el dueño les cambia la contraseña desde Ajustes.</p>
+      </form>
+    </AuthShell>
+  );
+}
+
+/** Se abre desde el enlace del correo de recuperación. */
+export function NuevaClave() {
+  const navigate = useNavigate();
+  const user = useAppSelector(selectCurrentUser);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <AuthShell title="Contraseña nueva" subtitle="Escríbela dos veces." footer={<Link to="/entrar">Cancelar</Link>}>
+      <form
+        className="form"
+        noValidate
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const data = new FormData(e.currentTarget);
+          if (data.get("nueva") !== data.get("nueva2")) return setErrors({ nueva2: "Las contraseñas no coinciden." });
+          setBusy(true);
+          const r = await cambiarMiClave(correoParaEntrar(user?.login ?? "") ?? "", null, String(data.get("nueva")));
+          setBusy(false);
+          if (r.ok) navigate("/", { replace: true });
+          else setErrors({ [r.field === "next" ? "nueva" : "general"]: r.message });
+        }}
+      >
+        <Field id="nueva" label="Contraseña nueva" type="password" autoComplete="new-password" error={errors.nueva} hint={`Mínimo ${CLAVE_MINIMA_NUBE} caracteres.`} autoFocus />
+        <Field id="nueva2" label="Repítela" type="password" autoComplete="new-password" error={errors.nueva2} />
+        {errors.general && (
+          <p className="form-error" role="alert">
+            {errors.general}
+          </p>
+        )}
+        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy || !user}>
+          {!user ? "Abriendo el enlace…" : busy ? "Guardando…" : "Guardar contraseña"}
         </button>
       </form>
     </AuthShell>
