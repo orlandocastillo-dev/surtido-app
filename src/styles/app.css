@@ -1822,3 +1822,28 @@ a {
 .start-options .option {
   font-weight: 400;
 }
+
+.auth__demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth__demo > span {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.auth__demo > span::before,
+.auth__demo > span::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line, rgb(0 0 0 / 0.1));
+}
+
+.auth__demo--top {
+  flex-direction: column-reverse;
+}

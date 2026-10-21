@@ -111,3 +111,20 @@ export function changePassword(current: string, next: string): AppThunk<Promise<
     return { ok: true };
   };
 }
+
+/** Cuenta de la tienda de ejemplo: para que quien visite la demo entre sin registrarse. */
+export const DEMO_LOGIN = "demo@surtido.co";
+export const DEMO_PASSWORD = "demo1234";
+
+/** Entra a la tienda de ejemplo. Si ya existe la cuenta de ejemplo, solo abre la sesión. */
+export function enterDemo(): AppThunk<Promise<AuthResult>> {
+  return async (dispatch, getState) => {
+    const existing = getState().auth.users.find((u) => u.login === DEMO_LOGIN);
+    if (existing) {
+      dispatch(loggedIn(existing.id));
+      return { ok: true };
+    }
+    if (getState().auth.users.length > 0) return { ok: false, message: "Esta tienda ya tiene una cuenta. Inicia sesión." };
+    return dispatch(registerStore({ storeName: "Doña Rosa", name: "Rosa Méndez", login: DEMO_LOGIN, password: DEMO_PASSWORD, start: "ejemplo" }));
+  };
+}

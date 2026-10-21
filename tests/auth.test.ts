@@ -3,7 +3,7 @@ import { serializeBackup } from "../src/app/persistence";
 import { makeStore } from "../src/app/store";
 import { loggedOut, userRemoved } from "../src/features/auth/authSlice";
 import { selectCan, selectCurrentUser } from "../src/features/auth/selectors";
-import { addUser, changePassword, login, registerStore } from "../src/features/auth/thunks";
+import { addUser, changePassword, enterDemo, login, registerStore } from "../src/features/auth/thunks";
 import { itemAdded } from "../src/features/cart/cartSlice";
 import { checkout } from "../src/features/sales/checkout";
 import { hashPassword, newSalt, verifyPassword } from "../src/lib/crypto";
@@ -115,5 +115,25 @@ describe("copia de seguridad", () => {
     const backup = serializeBackup(store.getState());
     expect(backup).not.toContain("passwordHash");
     expect(backup).not.toContain("rosa@correo.com");
+  });
+});
+
+describe("tienda de ejemplo", () => {
+  it("entra sin registrarse y vuelve a la misma cuenta después de cerrar sesión", async () => {
+    const store = makeStore();
+    expect(await store.dispatch(enterDemo())).toEqual({ ok: true });
+    const first = selectCurrentUser(store.getState());
+    expect(first).toMatchObject({ role: "dueño" });
+    expect(store.getState().products.ids.length).toBeGreaterThan(20);
+    store.dispatch(loggedOut());
+    expect(await store.dispatch(enterDemo())).toEqual({ ok: true });
+    expect(selectCurrentUser(store.getState())?.id).toBe(first?.id);
+  });
+
+  it("no pisa una tienda real que ya tiene cuenta", async () => {
+    const store = makeStore();
+    await store.dispatch(registerStore(owner));
+    store.dispatch(loggedOut());
+    expect(await store.dispatch(enterDemo())).toMatchObject({ ok: false });
   });
 });

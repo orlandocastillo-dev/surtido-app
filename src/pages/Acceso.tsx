@@ -2,7 +2,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectCurrentUser, selectHasAccount } from "../features/auth/selectors";
-import { login, MIN_PASSWORD, registerStore, type RegisterInput } from "../features/auth/thunks";
+import { DEMO_LOGIN, enterDemo, login, MIN_PASSWORD, registerStore, type RegisterInput } from "../features/auth/thunks";
 
 function AuthShell({ title, subtitle, children, footer }: { title: string; subtitle: string; children: ReactNode; footer: ReactNode }) {
   return (
@@ -51,12 +51,39 @@ function Field({
   );
 }
 
+/** Atajo para quien llega a ver la demo: entra a la tienda de ejemplo sin crear cuenta. */
+function DemoButton({ onError, top = false }: { onError: (message: string) => void; top?: boolean }) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className={`auth__demo ${top ? "auth__demo--top" : ""}`}>
+      <span>{top ? "o crea la tuya" : "o"}</span>
+      <button
+        type="button"
+        className="btn btn--block btn--lg"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          const result = await dispatch(enterDemo());
+          setBusy(false);
+          if (result.ok) navigate("/", { replace: true });
+          else onError(result.message);
+        }}
+      >
+        {busy ? "Abriendo…" : "Probar con la tienda de ejemplo"}
+      </button>
+    </div>
+  );
+}
+
 export function Entrar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector(selectCurrentUser);
   const hasAccount = useAppSelector(selectHasAccount);
   const storeName = useAppSelector((s) => s.settings.storeName);
+  const hasDemo = useAppSelector((s) => s.auth.users.some((u) => u.login === DEMO_LOGIN));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -100,6 +127,7 @@ export function Entrar() {
           {busy ? "Entrando…" : "Entrar"}
         </button>
       </form>
+      {hasDemo && <DemoButton onError={setError} />}
     </AuthShell>
   );
 }
@@ -153,6 +181,7 @@ export function Registro() {
         </>
       }
     >
+      <DemoButton top onError={(message) => setErrors({ general: message })} />
       <form className="form" onSubmit={submit} noValidate>
         <Field id="tienda" label="Nombre de la tienda" placeholder="Tienda Doña Rosa" error={errors.storeName} autoFocus />
         <Field id="nombre" label="Tu nombre" autoComplete="name" error={errors.name} />
