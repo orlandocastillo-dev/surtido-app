@@ -1847,3 +1847,49 @@ a {
 .auth__demo--top {
   flex-direction: column-reverse;
 }
+
+.auth__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: min(100%, 460px);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.auth__back:hover {
+  text-decoration: underline;
+}
+
+.password {
+  position: relative;
+}
+
+.password input {
+  padding-right: 3rem;
+}
+
+.password__toggle {
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.password__toggle:hover,
+.password__toggle[aria-pressed="true"] {
+  color: var(--green);
+}
+
+.password__toggle:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -4px;
+  border-radius: var(--radius-sm);
+}

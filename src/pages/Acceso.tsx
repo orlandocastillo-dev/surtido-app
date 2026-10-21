@@ -2,11 +2,19 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectCurrentUser, selectHasAccount } from "../features/auth/selectors";
+import { Icon } from "../components/Icon";
+import { PasswordInput } from "../components/PasswordInput";
 import { DEMO_LOGIN, enterDemo, login, MIN_PASSWORD, registerStore, type RegisterInput } from "../features/auth/thunks";
 
 function AuthShell({ title, subtitle, children, footer }: { title: string; subtitle: string; children: ReactNode; footer: ReactNode }) {
   return (
     <main className="auth">
+      {/* La app vive en /app/ y la presentación en la raíz; en el archivo portátil no hay a dónde volver. */}
+      {location.protocol !== "file:" && (
+        <a className="auth__back" href="../">
+          <Icon name="atras" size={18} /> Volver a la página de Surtido
+        </a>
+      )}
       <section className="auth__card">
         <div className="auth__brand">
           <svg className="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
@@ -30,12 +38,20 @@ function Field({
   label,
   error,
   hint,
+  type,
   ...input
 }: { id: string; label: string; error?: string; hint?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const shared = {
+    id,
+    name: id,
+    "aria-invalid": !!error,
+    "aria-describedby": error ? `${id}-error` : hint ? `${id}-hint` : undefined,
+    ...input,
+  };
   return (
     <div className="field">
       <label htmlFor={id}>{label}</label>
-      <input id={id} name={id} aria-invalid={!!error} aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined} {...input} />
+      {type === "password" ? <PasswordInput {...shared} /> : <input type={type} {...shared} />}
       {error ? (
         <p className="form-error" id={`${id}-error`}>
           {error}
@@ -86,7 +102,6 @@ export function Entrar() {
   const hasDemo = useAppSelector((s) => s.auth.users.some((u) => u.login === DEMO_LOGIN));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   if (user) return <Navigate to="/" replace />;
   if (!hasAccount) return <Navigate to="/registro" replace />;
@@ -113,11 +128,7 @@ export function Entrar() {
     >
       <form className="form" onSubmit={submit} noValidate>
         <Field id="usuario" label="Correo o celular" autoComplete="username" inputMode="email" autoFocus required />
-        <Field id="clave" label="Contraseña" type={showPassword ? "text" : "password"} autoComplete="current-password" required />
-        <label className="toggle small">
-          <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
-          Mostrar contraseña
-        </label>
+        <Field id="clave" label="Contraseña" type="password" autoComplete="current-password" required />
         {error && (
           <p className="form-error" role="alert">
             {error}

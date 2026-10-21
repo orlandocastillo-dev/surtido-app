@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { PasswordInput } from "../components/PasswordInput";
 import { useStore } from "react-redux";
 import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
@@ -316,15 +317,15 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
         >
           <div className="field">
             <label htmlFor="pw-actual">Contraseña actual</label>
-            <input id="pw-actual" name="actual" type="password" autoComplete="current-password" autoFocus />
+            <PasswordInput id="pw-actual" name="actual" autoComplete="current-password" autoFocus />
           </div>
           <div className="field">
             <label htmlFor="pw-nueva">Nueva contraseña</label>
-            <input id="pw-nueva" name="nueva" type="password" autoComplete="new-password" />
+            <PasswordInput id="pw-nueva" name="nueva" autoComplete="new-password" />
           </div>
           <div className="field">
             <label htmlFor="pw-nueva2">Repite la nueva</label>
-            <input id="pw-nueva2" name="nueva2" type="password" autoComplete="new-password" />
+            <PasswordInput id="pw-nueva2" name="nueva2" autoComplete="new-password" />
           </div>
           {error && (
             <p className="form-error" role="alert">
