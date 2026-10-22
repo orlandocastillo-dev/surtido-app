@@ -433,12 +433,12 @@ export function Recuperar() {
 
   if (enviado) {
     return (
-      <AuthShell title="Revisa tu correo" subtitle="Te mandamos un código." footer={<Link to="/entrar">Volver a entrar</Link>}>
+      <AuthShell title="Revisa tu correo" subtitle="Te mandamos un enlace." footer={<Link to="/entrar">Volver a entrar</Link>}>
         <div className="auth__mensaje">
           <p>
-            Si hay una tienda con <strong>{enviado}</strong>, te llegará un código para poner una contraseña nueva. Puede tardar un par de minutos; mira también en spam.
+            Si hay una tienda con <strong>{enviado}</strong>, te llegará un enlace para poner una contraseña nueva. Ábrelo en este mismo celular o computador. Puede tardar un par de minutos; mira también en spam.
           </p>
-          <CodigoCorreo email={enviado} tipo="recovery" boton="Seguir" />
+          <TengoCodigo email={enviado} />
         </div>
       </AuthShell>
     );
@@ -461,7 +461,7 @@ export function Recuperar() {
       >
         <Field id="correo" label="Correo" type="email" autoComplete="email" inputMode="email" error={error ?? undefined} autoFocus />
         <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy}>
-          {busy ? "Enviando…" : "Enviar código"}
+          {busy ? "Enviando…" : "Enviar enlace"}
         </button>
         <p className="muted small center">Los vendedores no reciben correo: el dueño les cambia la contraseña desde Ajustes.</p>
       </form>
@@ -509,6 +509,18 @@ function CodigoCorreo({ email, tipo, boton }: { email: string; tipo: "signup" | 
       </button>
     </form>
   );
+}
+
+/** Por si el correo trae un código en vez de (o además de) el enlace. */
+function TengoCodigo({ email }: { email: string }) {
+  const [abierto, setAbierto] = useState(false);
+  if (!abierto)
+    return (
+      <button type="button" className="link" onClick={() => setAbierto(true)}>
+        ¿Te llegó un código? Escríbelo aquí
+      </button>
+    );
+  return <CodigoCorreo email={email} tipo="recovery" boton="Seguir" />;
 }
 
 /** Se abre con el código o el enlace del correo de recuperación. */
