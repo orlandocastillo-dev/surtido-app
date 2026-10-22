@@ -263,6 +263,7 @@ describe("la app con cuentas en la nube", () => {
     await escribir("Tu correo", "rosa@correo.co");
     await escribir(/^Contraseña/, "clave-segura-1");
     await escribir("Repítela", "clave-segura-1");
+    await userEvent.click(screen.getByRole("checkbox", { name: /Acepto los Términos/ }));
     await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
 
     await waitFor(() => expect(store.getState().nube.modo).toBe("nube"), { timeout: 3000 });
@@ -286,6 +287,7 @@ describe("la app con cuentas en la nube", () => {
     await escribir(/^Contraseña/, "clave-segura-1");
     await escribir("Repítela", "clave-segura-1");
     await userEvent.click(screen.getByRole("radio", { name: /Empezar en blanco/ }));
+    await userEvent.click(screen.getByRole("checkbox", { name: /Acepto los Términos/ }));
     await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
     expect(await screen.findByRole("heading", { name: "Confirma tu correo" })).toBeInTheDocument();
     expect(b.tablas.tiendas).toHaveLength(0);
@@ -308,6 +310,7 @@ describe("la app con cuentas en la nube", () => {
     await escribir(/^Contraseña/, "clave-segura-1");
     await escribir("Repítela", "clave-segura-1");
     await userEvent.click(screen.getByRole("radio", { name: /Empezar en blanco/ }));
+    await userEvent.click(screen.getByRole("checkbox", { name: /Acepto los Términos/ }));
     await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
     expect(await screen.findByRole("heading", { name: "Confirma tu correo" })).toBeInTheDocument();
 
@@ -319,6 +322,45 @@ describe("la app con cuentas en la nube", () => {
     await userEvent.click(screen.getByRole("button", { name: "Confirmar" }));
     await waitFor(() => expect(store.getState().nube.modo).toBe("nube"), { timeout: 3000 });
     expect(b.tablas.tiendas).toHaveLength(1);
+  });
+
+  it("no deja crear la tienda sin aceptar términos y privacidad", async () => {
+    const b = nuevaBase();
+    const { router } = montar(b);
+    await screen.findByRole("heading", { name: "Entrar" });
+    await router.navigate("/registro");
+    await screen.findByLabelText("Nombre de la tienda");
+    await escribir("Nombre de la tienda", "Tienda La Esquina");
+    await escribir("Tu nombre", "Rosa Méndez");
+    await escribir("Tu correo", "rosa@correo.co");
+    await escribir(/^Contraseña/, "clave-segura-1");
+    await escribir("Repítela", "clave-segura-1");
+    await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("necesitas aceptar los términos");
+    expect(b.usuarios).toHaveLength(0);
+
+    await userEvent.click(screen.getByRole("checkbox", { name: /Acepto los Términos/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
+    await waitFor(() => expect(b.usuarios).toHaveLength(1));
+    expect(b.usuarios[0].meta).toMatchObject({ acepto_legal: { version: "2026-10-21" } });
+  });
+
+  it("después de 5 contraseñas equivocadas bloquea la entrada de ese vendedor", async () => {
+    const b = nuevaBase();
+    b.usuarios.push({ id: crypto.randomUUID(), email: "3001112233@vendedores.surtido.app", clave: "la-buena-123", confirmado: true, meta: {} });
+    montar(b);
+    await screen.findByRole("heading", { name: "Entrar" });
+    await escribir("Correo o celular", "300 111 2233");
+    for (let i = 0; i < 4; i++) {
+      await escribir("Contraseña", `mala-${i}-clave`);
+      await userEvent.click(screen.getByRole("button", { name: "Entrar" }));
+      expect(await screen.findByRole("alert")).toHaveTextContent("Usuario o contraseña incorrectos.");
+    }
+    await escribir("Contraseña", "mala-final-1");
+    await userEvent.click(screen.getByRole("button", { name: "Entrar" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("durante 15 minutos");
+    expect(screen.getByRole("alert")).toHaveTextContent("pídele al dueño");
+    expect(screen.getByRole("button", { name: /Intenta de nuevo en/ })).toBeDisabled();
   });
 
   it("el dueño crea un vendedor y el vendedor entra con su celular", async () => {
@@ -333,6 +375,7 @@ describe("la app con cuentas en la nube", () => {
     await escribir(/^Contraseña/, "clave-segura-1");
     await escribir("Repítela", "clave-segura-1");
     await userEvent.click(screen.getByRole("radio", { name: /Empezar en blanco/ }));
+    await userEvent.click(screen.getByRole("checkbox", { name: /Acepto los Términos/ }));
     await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
     await waitFor(() => expect(store.getState().nube.modo).toBe("nube"), { timeout: 3000 });
 

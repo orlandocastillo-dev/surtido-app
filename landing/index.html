@@ -2,10 +2,7 @@
 <html lang="es-CO">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      // Si el botón del correo abrió la presentación en vez de la app, se pasa a la app con el mismo enlace.
-      if (/[?&](token_hash|code|error_description)=/.test(location.search)) location.replace("app/" + location.search);
-    </script>
+    <script src="js/inicio.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Surtido | Ventas, inventario y fiado para tu tienda</title>
     <meta
@@ -18,21 +15,10 @@
     <meta property="og:type" content="website" />
     <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/instrument-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
 
-    <!-- Aplica el tema guardado antes de pintar para evitar el parpadeo. -->
-    <script>
-      try {
-        const t = localStorage.getItem("surtido-tema");
-        if (t) document.documentElement.dataset.theme = t;
-      } catch {}
-    </script>
   </head>
   <body>
     <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -383,7 +369,8 @@
           <h2>Ayuda</h2>
           <a href="#">Centro de ayuda</a>
           <a href="#">WhatsApp de soporte</a>
-          <a href="#">Términos y privacidad</a>
+          <a href="terminos.html">Términos y condiciones</a>
+          <a href="privacidad.html">Política de privacidad</a>
         </nav>
       </div>
       <div class="container footer__legal">

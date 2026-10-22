@@ -17,7 +17,7 @@ import { settingsUpdated } from "../features/settings/settingsSlice";
 import { downloadFile } from "../lib/csv";
 import { dayKey } from "../lib/dates";
 import { refrescarMiembros, sincronizarAhora } from "../nube/conexion";
-import { CLAVE_MINIMA_NUBE, cambiarClaveDe, cambiarMiClave, correoParaEntrar, crearVendedor, quitarVendedor, salir } from "../nube/cuenta";
+import { CLAVE_MINIMA_NUBE, cambiarClaveDe, cambiarMiClave, correoParaEntrar, crearVendedor, quitarVendedor, salir, salirDeTodo } from "../nube/cuenta";
 
 export function Ajustes() {
   const dispatch = useAppDispatch();
@@ -75,6 +75,7 @@ export function Ajustes() {
       </section>
 
       {enNube && <EstadoNube />}
+      {enNube && <Seguridad />}
 
       {isOwner && (
         <>
@@ -397,6 +398,38 @@ function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void 
         </form>
       )}
     </Modal>
+  );
+}
+
+/** Cerrar la sesión en todos los equipos y los enlaces a privacidad y términos. */
+function Seguridad() {
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  return (
+    <section className="card nube-estado">
+      <div>
+        <h2 className="section-title">Sesiones abiertas</h2>
+        <p className="muted small">Si perdiste un celular o entraste en un equipo ajeno, cierra la sesión en todos lados. Tendrás que volver a entrar aquí también.</p>
+        {error && <p className="form-error small">{error}</p>}
+        <p className="muted small">
+          <a href="../privacidad.html">Política de privacidad</a> · <a href="../terminos.html">Términos</a>
+        </p>
+      </div>
+      <button
+        type="button"
+        className="btn btn--small"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          const r = await salirDeTodo();
+          setBusy(false);
+          if (!r.ok) setError(r.message);
+          // Si sale bien, la app vuelve sola a la pantalla de entrar.
+        }}
+      >
+        {busy ? "Cerrando…" : "Cerrar en todos los equipos"}
+      </button>
+    </section>
   );
 }
 

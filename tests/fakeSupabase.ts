@@ -29,6 +29,8 @@ const ahora = (b: Base) => new Date((b.reloj += 1000)).toISOString();
 export function clienteFalso(b: Base, opciones: { confirmarCorreo?: boolean } = {}) {
   let sesion: { user: { id: string; email: string; user_metadata: Record<string, unknown> } } | null = null;
   const oyentes = new Set<(e: Evento, s: typeof sesion) => void>();
+  const fallos = new Map<string, number>();
+  const bloqueados = new Map<string, number>();
   const avisar = (e: Evento) => oyentes.forEach((f) => f(e, sesion));
   const abrir = (u: Base["usuarios"][number]) => (sesion = { user: { id: u.id, email: u.email, user_metadata: { ...u.meta } } });
   const uid = () => sesion?.user.id ?? null;
@@ -144,9 +146,21 @@ export function clienteFalso(b: Base, opciones: { confirmarCorreo?: boolean } = 
       resend: async () => ({ data: {}, error: null }),
     },
     from: consulta,
-    async rpc(nombre: string, args: Record<string, unknown>) {
+    async rpc(nombre: string, args?: Record<string, unknown>) {
       if (b.offline) return sinRed();
       b.llamadas.push(`rpc:${nombre}`);
+      // Bloqueo por intentos fallidos (lo mismo que hace la base: 5 fallos → 15 minutos).
+      if (nombre === "bloqueo_restante") return { data: bloqueados.get(String(args?.correo)) ?? 0, error: null };
+      if (nombre === "registrar_fallo") {
+        const c = String(args?.correo);
+        const n = (fallos.get(c) ?? 0) + 1;
+        fallos.set(c, n);
+        if (n < 5) return { data: 0, error: null };
+        fallos.set(c, 0);
+        bloqueados.set(c, 900);
+        return { data: 900, error: null };
+      }
+      if (nombre === "login_exitoso") return { data: null, error: null };
       if (!uid()) return err("42501", "Hace falta iniciar sesión");
       if (nombre === "crear_tienda") {
         if (miTienda()) return err("23505", "Ya tienes una tienda");

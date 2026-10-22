@@ -6,10 +6,13 @@ import type { FilaMiembro } from "./esquema";
 /** En la nube la contraseña pide un poco más que en el modo sin internet. */
 export const CLAVE_MINIMA_NUBE = 8;
 
+/** Fecha de la versión vigente de Privacidad y Términos (landing/privacidad.html y terminos.html). */
+export const VERSION_LEGAL = "2026-10-21";
+
 /** Los vendedores que entran con celular usan un correo interno (nunca se les envía nada). */
 export const DOMINIO_VENDEDORES = "vendedores.surtido.app";
 
-export type Resultado = { ok: true } | { ok: false; field?: string; message: string };
+export type Resultado = { ok: true } | { ok: false; field?: string; message: string; bloqueo?: number };
 
 const esCorreo = (v: string) => /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v);
 const esCelular = (v: string) => /^3\d{9}$/.test(v);
@@ -50,16 +53,21 @@ export interface Pendiente {
   inicio: "ejemplo" | "vacio" | "conservar";
 }
 
-export async function crearCuentaDueno(email: string, clave: string, p: Pendiente): Promise<Resultado & { confirmar?: boolean }> {
+export async function crearCuentaDueno(email: string, clave: string, p: Pendiente, acepta = false): Promise<Resultado & { confirmar?: boolean }> {
   const correo = email.trim().toLowerCase();
-  if (!esCorreo(correo)) return { ok: false, field: "login", message: "Para la cuenta del dueño usa un correo: ahí te llega el código para confirmarla." };
+  if (!esCorreo(correo)) return { ok: false, field: "login", message: "Para la cuenta del dueño usa un correo: con él entras y recuperas la contraseña." };
   if (clave.length < CLAVE_MINIMA_NUBE) return { ok: false, field: "password", message: `La contraseña debe tener al menos ${CLAVE_MINIMA_NUBE} caracteres.` };
+  if (!acepta) return { ok: false, field: "acepta", message: "Para crear la tienda necesitas aceptar los términos y la política de privacidad." };
   try {
     const db = await nube();
     const { data, error } = await db.auth.signUp({
       email: correo,
       password: clave,
-      options: { data: { nombre: p.nombre.trim(), tienda_pendiente: p }, emailRedirectTo: window.location.origin + window.location.pathname },
+      // La aceptación queda guardada en la cuenta, con la versión y la fecha (prueba de la autorización, Ley 1581).
+      options: {
+        data: { nombre: p.nombre.trim(), tienda_pendiente: p, acepto_legal: { version: VERSION_LEGAL, fecha: new Date().toISOString() } },
+        emailRedirectTo: window.location.origin + window.location.pathname,
+      },
     });
     if (error) return { ok: false, message: mensaje(error) };
     if (data.user && data.user.identities?.length === 0) return { ok: false, field: "login", message: "Ya hay una cuenta con ese correo. Entra con tu contraseña." };
@@ -69,13 +77,42 @@ export async function crearCuentaDueno(email: string, clave: string, p: Pendient
   }
 }
 
+/** "15 minutos", "1 hora", "2 horas"… */
+export function duracion(segundos: number): string {
+  const min = Math.max(1, Math.ceil(segundos / 60));
+  if (min < 60) return min === 1 ? "1 minuto" : `${min} minutos`;
+  const h = Math.ceil(min / 60);
+  return h === 1 ? "1 hora" : `${h} horas`;
+}
+
+const mensajeBloqueo = (seg: number, vendedor: boolean) =>
+  `Por seguridad, bloqueamos la entrada con este usuario durante ${duracion(seg)} por varios intentos fallidos. ` +
+  (vendedor ? "Si no recuerdas la contraseña, pídele al dueño que te ponga una nueva." : "Si olvidaste la contraseña, puedes recuperarla.");
+
+/**
+ * Entrar con correo o celular. Tras 5 contraseñas equivocadas seguidas, la base bloquea ese usuario
+ * (15 min, luego 30, 60…). Si las funciones de bloqueo no responden, se entra igual: Supabase además
+ * limita los intentos por dirección IP.
+ */
 export async function entrar(usuario: string, clave: string): Promise<Resultado> {
   const email = correoParaEntrar(usuario);
   if (!email) return { ok: false, field: "usuario", message: "Escribe tu correo o tu celular de 10 dígitos." };
+  const vendedor = email.endsWith(`@${DOMINIO_VENDEDORES}`);
   try {
     const db = await nube();
+    const { data: falta } = await db.rpc("bloqueo_restante", { correo: email });
+    if (typeof falta === "number" && falta > 0) return { ok: false, message: mensajeBloqueo(falta, vendedor), bloqueo: falta };
+
     const { error } = await db.auth.signInWithPassword({ email, password: clave });
-    return error ? { ok: false, message: mensaje(error) } : { ok: true };
+    if (!error) {
+      void db.rpc("login_exitoso");
+      return { ok: true };
+    }
+    if (/invalid_credentials|Invalid login credentials/i.test(`${(error as { code?: string }).code ?? ""} ${error.message}`)) {
+      const { data: bloqueo } = await db.rpc("registrar_fallo", { correo: email });
+      if (typeof bloqueo === "number" && bloqueo > 0) return { ok: false, message: mensajeBloqueo(bloqueo, vendedor), bloqueo };
+    }
+    return { ok: false, message: mensaje(error) };
   } catch (e) {
     return { ok: false, message: mensaje(e) };
   }
@@ -153,6 +190,17 @@ export async function cambiarMiClave(email: string, actual: string | null, nueva
   }
 }
 
+/** Cierra la sesión en todos los equipos donde esté abierta, incluido este. */
+export async function salirDeTodo(): Promise<Resultado> {
+  try {
+    const db = await nube();
+    const { error } = await db.auth.signOut({ scope: "global" });
+    return error ? { ok: false, message: mensaje(error) } : { ok: true };
+  } catch (e) {
+    return { ok: false, message: mensaje(e) };
+  }
+}
+
 export async function salir() {
   const db = await nube();
   await db.auth.signOut({ scope: "local" });
@@ -199,5 +247,10 @@ async function vendedores(cuerpo: Record<string, string>): Promise<Resultado & {
 }
 
 export const crearVendedor = (nombre: string, usuario: string, clave: string, rol: Role) => vendedores({ accion: "crear", nombre, usuario, clave, rol });
-export const cambiarClaveDe = (userId: string, clave: string) => vendedores({ accion: "clave", user_id: userId, clave });
+/** Contraseña nueva para un vendedor; de paso se le quita el bloqueo por intentos fallidos. */
+export async function cambiarClaveDe(userId: string, clave: string): Promise<Resultado> {
+  const r = await vendedores({ accion: "clave", user_id: userId, clave });
+  if (r.ok) await nube().then((db) => db.rpc("desbloquear_miembro", { miembro: userId })).catch(() => undefined);
+  return r;
+}
 export const quitarVendedor = (userId: string) => vendedores({ accion: "eliminar", user_id: userId });

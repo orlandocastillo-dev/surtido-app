@@ -2026,3 +2026,29 @@ input.codigo {
 input.codigo::placeholder {
   opacity: 0.3;
 }
+
+/* Aceptar términos y privacidad al crear la tienda */
+.acepto {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  cursor: pointer;
+}
+.acepto input {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.1rem;
+  accent-color: var(--green);
+}
+.auth__legal {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: rgb(255 255 255 / 0.8);
+}
+.auth__legal a {
+  color: inherit;
+}

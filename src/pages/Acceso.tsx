@@ -34,6 +34,11 @@ function AuthShell({ title, subtitle, children, footer, note }: { title: string;
         <p className="auth__footer">{footer}</p>
       </section>
       <p className="auth__note">{note ?? (nubeDisponible() ? NOTA_NUBE : NOTA_LOCAL)}</p>
+      {location.protocol !== "file:" && (
+        <p className="auth__legal">
+          <a href="../privacidad.html">Privacidad</a> · <a href="../terminos.html">Términos</a>
+        </p>
+      )}
     </main>
   );
 }
@@ -255,22 +260,46 @@ function useAbriendo() {
   return { user, iniciando, errorNube };
 }
 
+/** Segundos que faltan, bajando de uno en uno (0 cuando no hay bloqueo). */
+function useCuentaRegresiva(segundos: number | undefined): number {
+  const [falta, setFalta] = useState(0);
+  useEffect(() => setFalta(segundos ?? 0), [segundos]);
+  useEffect(() => {
+    if (falta <= 0) return;
+    const t = setTimeout(() => setFalta((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [falta]);
+  return falta;
+}
+
+const reloj = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
 function EntrarNube() {
   const navigate = useNavigate();
   const { user, iniciando, errorNube } = useAbriendo();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [bloqueo, setBloqueo] = useState<number | undefined>();
+  const espera = useCuentaRegresiva(bloqueo);
 
   if (user) return <Navigate to="/" replace />;
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const data = new FormData(form);
     setBusy(true);
     setError(null);
     const result = await entrarNube(String(data.get("usuario")), String(data.get("clave")));
     setBusy(false);
-    if (!result.ok) setError(result.message);
+    if (!result.ok) {
+      setError(result.message);
+      setBloqueo(result.bloqueo);
+      if (result.bloqueo) {
+        const campo = form.elements.namedItem("clave") as HTMLInputElement | null;
+        if (campo) campo.value = "";
+      }
+    }
     // Si entra bien, la app abre la tienda sola (src/nube/conexion.ts) y esta pantalla redirige.
   };
   const abriendo = busy || iniciando;
@@ -293,8 +322,8 @@ function EntrarNube() {
             {error ?? errorNube}
           </p>
         )}
-        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={abriendo}>
-          {iniciando ? "Abriendo tu tienda…" : busy ? "Entrando…" : "Entrar"}
+        <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={abriendo || espera > 0}>
+          {espera > 0 ? `Intenta de nuevo en ${reloj(espera)}` : iniciando ? "Abriendo tu tienda…" : busy ? "Entrando…" : "Entrar"}
         </button>
         <p className="muted small center">
           <button type="button" className="link" onClick={() => navigate("/recuperar")}>
@@ -330,7 +359,7 @@ function RegistroNube() {
     if (data.get("clave") !== data.get("clave2")) return setErrors({ clave2: "Las contraseñas no coinciden." });
     setBusy(true);
     setErrors({});
-    const result = await crearCuentaDueno(String(data.get("usuario")), String(data.get("clave")), { tienda, nombre, inicio: start });
+    const result = await crearCuentaDueno(String(data.get("usuario")), String(data.get("clave")), { tienda, nombre, inicio: start }, data.get("acepta") === "si");
     setBusy(false);
     if (!result.ok) return setErrors({ [result.field ?? "general"]: result.message });
     if (result.confirmar) setConfirmar(String(data.get("usuario")).trim().toLowerCase());
@@ -356,7 +385,7 @@ function RegistroNube() {
       <form className="form" onSubmit={submit} noValidate>
         <Field id="tienda" label="Nombre de la tienda" placeholder="Tienda Doña Rosa" error={errors.storeName} autoFocus />
         <Field id="nombre" label="Tu nombre" autoComplete="name" error={errors.name} />
-        <Field id="usuario" label="Tu correo" type="email" autoComplete="email" inputMode="email" error={errors.login} hint="Te llega un código para confirmar la cuenta." />
+        <Field id="usuario" label="Tu correo" type="email" autoComplete="email" inputMode="email" error={errors.login} hint="Con este correo entras y recuperas la contraseña." />
         <div className="field-row">
           <Field id="clave" label="Contraseña" type="password" autoComplete="new-password" error={errors.password} hint={`Mínimo ${CLAVE_MINIMA_NUBE} caracteres.`} />
           <Field id="clave2" label="Repítela" type="password" autoComplete="new-password" error={errors.clave2} />
@@ -375,6 +404,25 @@ function RegistroNube() {
           ))}
         </fieldset>
 
+        <label className="acepto">
+          <input type="checkbox" name="acepta" value="si" aria-invalid={!!errors.acepta} aria-describedby={errors.acepta ? "acepta-error" : undefined} />
+          <span>
+            Acepto los{" "}
+            <a href="../terminos.html" target="_blank" rel="noopener">
+              Términos
+            </a>{" "}
+            y autorizo el tratamiento de mis datos según la{" "}
+            <a href="../privacidad.html" target="_blank" rel="noopener">
+              Política de privacidad
+            </a>
+            .
+          </span>
+        </label>
+        {errors.acepta && (
+          <p className="form-error" id="acepta-error" role="alert">
+            {errors.acepta}
+          </p>
+        )}
         {errors.general && (
           <p className="form-error" role="alert">
             {errors.general}
