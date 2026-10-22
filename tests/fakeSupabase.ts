@@ -1,8 +1,4 @@
-/**
- * Supabase falso en memoria con lo que usa Surtido: auth, tablas filtradas por tienda (como RLS),
- * las funciones crear_tienda, reemplazar_tienda y ajustar_stock, y la función de servidor "vendedores".
- * Varias "pestañas" (clientes) pueden compartir la misma base para probar dos equipos a la vez.
- */
+// Supabase falso en memoria con lo que usa Surtido
 type Fila = Record<string, unknown>;
 type Evento = "INITIAL_SESSION" | "SIGNED_IN" | "SIGNED_OUT" | "USER_UPDATED" | "PASSWORD_RECOVERY";
 

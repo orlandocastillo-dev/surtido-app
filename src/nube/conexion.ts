@@ -27,10 +27,7 @@ const recordada = (uid: string) => {
   }
 };
 
-/**
- * Al abrir la app con Supabase configurado: revisa si hay una sesión guardada y, si la hay,
- * abre esa tienda. Mientras tanto la app muestra una pantalla de carga en vez del login.
- */
+// Al abrir la app con Supabase configurado: revisa si hay una sesión guardada y, si la hay, abre esa tienda
 export async function iniciarNube(s: AppStore) {
   store = s;
   if (!nubeDisponible()) return;

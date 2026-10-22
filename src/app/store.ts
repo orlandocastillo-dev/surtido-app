@@ -27,10 +27,7 @@ export type RootState = ReturnType<typeof slices>;
 /** Los datos del negocio, sin las cuentas de usuario ni el estado de la conexión. */
 export type BusinessState = Omit<RootState, "auth" | "nube">;
 
-/**
- * Reemplaza los datos del negocio (copia de seguridad, tienda de ejemplo o empezar en blanco).
- * Las cuentas y la sesión se conservan: restaurar una copia nunca deja a nadie por fuera.
- */
+// Reemplaza los datos del negocio (copia de seguridad, tienda de ejemplo o empezar en blanco)
 export const dataReplaced = createAction<BusinessState>("app/dataReplaced");
 
 /** Igual que dataReplaced, pero con lo que llegó de la base: no se vuelve a subir. */

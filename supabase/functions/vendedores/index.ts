@@ -1,13 +1,4 @@
-// Función de Supabase (Deno) para que el dueño administre a sus vendedores.
-// Crear usuarios y cambiar contraseñas de otros necesita la llave de servicio, que nunca va al navegador:
-// por eso vive aquí, en el servidor, y antes de hacer nada comprueba que quien llama es el dueño de la tienda.
-//
-//   POST /functions/v1/vendedores   (con el token de la sesión del dueño)
-//   { "accion": "crear", "nombre": "Carlos", "usuario": "3001112233", "clave": "...", "rol": "vendedor" }
-//   { "accion": "clave", "user_id": "...", "clave": "..." }
-//   { "accion": "eliminar", "user_id": "..." }
-//
-// Desplegar: supabase functions deploy vendedores
+// Función de Supabase (Deno) para que el dueño administre a sus vendedores
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -103,7 +94,7 @@ Deno.serve(async (req) => {
       const { count } = await admin.from("miembros").select("user_id", { count: "exact", head: true }).eq("tienda_id", yo.tienda_id).eq("rol", "dueño");
       if ((count ?? 0) <= 1) return respuesta(400, { error: "La tienda no se puede quedar sin dueño." });
     }
-    // Borrar el usuario borra también su fila en miembros (on delete cascade). Sus ventas quedan, sin vendedor.
+    // Borrar el usuario borra también su fila en miembros (on delete cascade)
     const { error } = await admin.auth.admin.deleteUser(cuerpo.user_id);
     return error ? respuesta(400, { error: "No se pudo quitar el acceso." }) : respuesta(200, { ok: true });
   }

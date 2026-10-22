@@ -14,10 +14,7 @@ export function roundTo50(value: number): number {
   return Math.round(value / 50) * 50;
 }
 
-/**
- * Valor de una línea de venta. Lo vendido por peso se redondea a $50:
- * "deme $2.000 de tomate" debe cobrar $2.000, no $1.998.
- */
+// Valor de una línea de venta
 export function lineAmount(price: number, quantity: number, unit: "und" | "kg"): number {
   const raw = price * quantity;
   return unit === "kg" ? roundTo50(raw) : Math.round(raw);

@@ -89,11 +89,7 @@ const mensajeBloqueo = (seg: number, vendedor: boolean) =>
   `Por seguridad, bloqueamos la entrada con este usuario durante ${duracion(seg)} por varios intentos fallidos. ` +
   (vendedor ? "Si no recuerdas la contraseña, pídele al dueño que te ponga una nueva." : "Si olvidaste la contraseña, puedes recuperarla.");
 
-/**
- * Entrar con correo o celular. Tras 5 contraseñas equivocadas seguidas, la base bloquea ese usuario
- * (15 min, luego 30, 60…). Si las funciones de bloqueo no responden, se entra igual: Supabase además
- * limita los intentos por dirección IP.
- */
+// Entrar con correo o celular
 export async function entrar(usuario: string, clave: string): Promise<Resultado> {
   const email = correoParaEntrar(usuario);
   if (!email) return { ok: false, field: "usuario", message: "Escribe tu correo o tu celular de 10 dígitos." };
@@ -130,10 +126,7 @@ export async function recuperarClave(email: string): Promise<Resultado> {
   }
 }
 
-/**
- * Confirma el correo (o abre el cambio de contraseña) con el código que llegó por correo.
- * A diferencia del enlace, sirve desde cualquier dispositivo.
- */
+// Confirma el correo (o abre el cambio de contraseña) con el código que llegó por correo
 export async function verificarCodigo(email: string, codigo: string, tipo: "signup" | "recovery"): Promise<Resultado> {
   const token = codigo.replace(/\s/g, "");
   if (!/^\d{6,10}$/.test(token)) return { ok: false, field: "codigo", message: "Escribe el código de 6 dígitos que te llegó." };
@@ -146,10 +139,7 @@ export async function verificarCodigo(email: string, codigo: string, tipo: "sign
   }
 }
 
-/**
- * El botón del correo trae ?token_hash=...&type=... y funciona aunque se abra en otro celular
- * o computador. Devuelve null si la dirección no trae nada.
- */
+// El botón del correo trae ?token_hash=...&type=... y funciona aunque se abra en otro celular o computador
 export async function abrirEnlaceDelCorreo(db: SupabaseClient): Promise<Resultado | null> {
   const q = new URLSearchParams(window.location.search);
   const token_hash = q.get("token_hash");
@@ -206,9 +196,7 @@ export async function salir() {
   await db.auth.signOut({ scope: "local" });
 }
 
-// ---------------------------------------------------------------------------
 // Tienda y miembros
-// ---------------------------------------------------------------------------
 
 export async function miMembresia(db: SupabaseClient, userId: string): Promise<{ tienda_id: string; rol: Role } | null> {
   const { data, error } = await db.from("miembros").select("tienda_id, rol").eq("user_id", userId).maybeSingle();

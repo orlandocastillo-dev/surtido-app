@@ -116,7 +116,7 @@ export function changePassword(current: string, next: string): AppThunk<Promise<
 export const DEMO_LOGIN = "demo@surtido.co";
 export const DEMO_PASSWORD = "demo1234";
 
-/** Entra a la tienda de ejemplo. Si ya existe la cuenta de ejemplo, solo abre la sesión. */
+// Entra a la tienda de ejemplo
 export function enterDemo(): AppThunk<Promise<AuthResult>> {
   return async (dispatch, getState) => {
     const existing = getState().auth.users.find((u) => u.login === DEMO_LOGIN);

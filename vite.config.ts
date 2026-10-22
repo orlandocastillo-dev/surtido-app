@@ -4,10 +4,7 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
-  /**
-   * Modo "portable": toda la app en un solo index.html que se abre con doble clic (file://).
-   * Queda en portable/index.html.
-   */
+  // Modo "portable": toda la app en un solo index.html que se abre con doble clic (file://)
   const portable = mode === "portable";
 
   return {

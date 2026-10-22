@@ -15,7 +15,7 @@ export interface Product {
   name: string;
   barcode?: string;
   category: Category;
-  /** Precio de venta en pesos. Para productos por peso, precio por kilo. */
+  // Precio de venta en pesos
   price: number;
   /** Costo de compra al proveedor, para calcular la ganancia. */
   cost: number;

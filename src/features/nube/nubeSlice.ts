@@ -1,11 +1,7 @@
 import { createAction, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Customer, LedgerEntry, Product, Sale, Shift } from "../../types";
 
-/**
- * Dónde viven los datos.
- * - "local": la tienda de ejemplo o la app sin Supabase configurado. Todo en el navegador.
- * - "nube": la tienda tiene cuenta en Supabase. Se trabaja igual sin internet y los cambios suben solos.
- */
+// Dónde viven los datos. - "local": la tienda de ejemplo o la app sin Supabase configurado
 export interface NubeState {
   modo: "local" | "nube";
   /** "iniciando" mientras se revisa si hay sesión guardada; la app espera para no mostrar el login de más. */
@@ -45,7 +41,7 @@ const nubeSlice = createSlice({
 export const { nubeIniciando, nubeLista, nubeConectada, nubeDesconectada, nubeEstado } = nubeSlice.actions;
 export default nubeSlice.reducer;
 
-/** Filas que llegaron de la base (de otro equipo o del primer arranque). Se mezclan sin crear cambios nuevos. */
+// Filas que llegaron de la base (de otro equipo o del primer arranque)
 export interface Recibido {
   productos?: Product[];
   clientes?: Customer[];

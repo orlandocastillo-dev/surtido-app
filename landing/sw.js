@@ -1,5 +1,4 @@
-// Antes la app vivía en la raíz y dejó un service worker que guarda la versión vieja.
-// Este lo reemplaza, se da de baja y recarga las pestañas para que muestren la página nueva.
+// Antes la app vivía en la raíz y dejó un service worker que guarda la versión vieja
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(

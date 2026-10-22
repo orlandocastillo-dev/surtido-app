@@ -13,10 +13,7 @@ declare global {
   }
 }
 
-/**
- * Lector de códigos con la cámara del celular usando la API nativa BarcodeDetector
- * (Chrome en Android). En equipos sin soporte se usa un lector USB, que escribe el código en el buscador.
- */
+// Lector de códigos con la cámara del celular usando la API nativa BarcodeDetector (Chrome en Android)
 export function Scanner({ open, onClose, onDetected }: { open: boolean; onClose: () => void; onDetected: (code: string) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState<string | null>(null);

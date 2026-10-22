@@ -3,11 +3,7 @@ import type { RootState } from "../app/store";
 import { esDeLaNube } from "../features/nube/nubeSlice";
 import { camposProducto, hacia } from "./esquema";
 
-/**
- * Cada cambio de la tienda se convierte en una operación pendiente para la base.
- * Las existencias van como suma o resta (ajustar_stock), nunca como valor final:
- * si dos celulares venden la misma leche al tiempo, la base descuenta las dos ventas.
- */
+// Cada cambio de la tienda se convierte en una operación pendiente para la base
 export type Op =
   | { k: "insertar"; tabla: "productos" | "clientes" | "fiado" | "ventas" | "turnos"; fila: Record<string, unknown> }
   | { k: "cambiar"; tabla: "productos" | "clientes" | "ventas" | "turnos"; id: string; cambios: Record<string, unknown> }
@@ -133,10 +129,7 @@ export function diferencias(a: RootState, b: RootState, tienda: string): Op[] {
   return ops;
 }
 
-/**
- * Junta operaciones seguidas sobre la misma fila para no mandar 20 peticiones al escribir un nombre
- * o al vender 20 unidades una por una. Respeta el orden: un cliente se crea antes de su primer fiado.
- */
+// Junta operaciones seguidas sobre la misma fila para no mandar 20 peticiones al escribir un nombre o al vender 20 unidades una por una
 export function compactar(ops: Op[]): Op[] {
   const out: Op[] = [];
   for (const op of ops) {

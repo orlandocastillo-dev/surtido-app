@@ -52,10 +52,7 @@ export function parseBackup(text: string): BusinessState {
   return business;
 }
 
-/**
- * Guarda el estado en el navegador para que la tienda funcione sin internet.
- * Se agrupan los cambios cada 400 ms para no escribir en cada tecla.
- */
+// Guarda el estado en el navegador para que la tienda funcione sin internet
 export function persist(store: AppStore): () => void {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const save = () => {

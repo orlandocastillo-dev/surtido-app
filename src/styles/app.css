@@ -1,7 +1,4 @@
-/* ==========================================================================
-   Surtido: estilos de la app
-   Móvil primero: barra de pestañas abajo en el celular, lateral en escritorio.
-   ========================================================================== */
+/* Surtido: estilos de la app Móvil primero: barra de pestañas abajo en el celular, lateral en escritorio */
 
 :root {
   --bg: #f2f5f3;
@@ -102,7 +99,7 @@ a {
   white-space: nowrap;
 }
 
-/* ---------- Botones y controles ---------- */
+/* Botones y controles */
 
 .btn {
   display: inline-flex;
@@ -262,7 +259,7 @@ a {
   accent-color: var(--green);
 }
 
-/* ---------- Formularios ---------- */
+/* Formularios */
 
 .form {
   display: grid;
@@ -356,7 +353,7 @@ a {
   flex: 1;
 }
 
-/* ---------- Estructura ---------- */
+/* Estructura */
 
 .shell {
   min-height: 100dvh;
@@ -612,7 +609,7 @@ a {
   font-weight: 600;
 }
 
-/* ---------- Indicadores ---------- */
+/* Indicadores */
 
 .stats {
   display: grid;
@@ -681,7 +678,7 @@ a {
   background: var(--danger);
 }
 
-/* ---------- Vender ---------- */
+/* Vender */
 
 .sell {
   display: grid;
@@ -1064,7 +1061,7 @@ a {
   box-shadow: 0 0 12px var(--marigold);
 }
 
-/* ---------- Inventario ---------- */
+/* Inventario */
 
 .toolbar {
   display: flex;
@@ -1175,7 +1172,7 @@ a {
   border-bottom: 1px solid var(--line);
 }
 
-/* ---------- Fiado ---------- */
+/* Fiado */
 
 .ledger-list {
   margin: 0;
@@ -1270,7 +1267,7 @@ a {
   color: var(--green);
 }
 
-/* ---------- Caja ---------- */
+/* Caja */
 
 .open-shift {
   max-width: 420px;
@@ -1356,7 +1353,7 @@ a {
   color: var(--danger);
 }
 
-/* ---------- Reportes ---------- */
+/* Reportes */
 
 .chart {
   display: grid;
@@ -1450,7 +1447,7 @@ a {
   font-size: 0.925rem;
 }
 
-/* ---------- Diálogos y avisos ---------- */
+/* Diálogos y avisos */
 
 .modal {
   width: min(100% - 1.5rem, 480px);
@@ -1533,7 +1530,7 @@ a {
   }
 }
 
-/* ---------- Escritorio ---------- */
+/* Escritorio */
 
 @media (min-width: 900px) {
   .shell {
@@ -1641,7 +1638,7 @@ a {
   }
 }
 
-/* ---------- Cuenta y acceso ---------- */
+/* Cuenta y acceso */
 
 .user-chip {
   display: inline-flex;
@@ -1894,7 +1891,7 @@ a {
   border-radius: var(--radius-sm);
 }
 
-/* ---------- Nube: estado de sincronización y pantallas de cuenta ---------- */
+/* Nube: estado de sincronización y pantallas de cuenta */
 
 .sync-pill {
   display: inline-flex;

@@ -1,11 +1,7 @@
--- Surtido: tiendas con dueño y vendedores, y los datos de cada tienda en Supabase.
--- Toda fila lleva el tienda_id. Las políticas RLS dejan ver los datos solo a los miembros de esa tienda
--- y reservan para el dueño lo mismo que la app: editar productos, anular ventas, cambiar la tienda.
+-- Surtido: tiendas con dueño y vendedores, y los datos de cada tienda en Supabase
 
 
--- ---------------------------------------------------------------------------
 -- Tiendas y miembros
--- ---------------------------------------------------------------------------
 
 create table public.tiendas (
   id uuid primary key default gen_random_uuid(),
@@ -29,8 +25,7 @@ create table public.miembros (
   unique (user_id)
 );
 
--- La tienda de quien está conectado, y si es dueño. Security definer para que las políticas
--- puedan consultar miembros sin caer en recursión de RLS.
+-- La tienda de quien está conectado, y si es dueño
 create or replace function public.mi_tienda()
 returns uuid
 language sql
@@ -51,9 +46,7 @@ as $$
   select exists (select 1 from public.miembros where user_id = auth.uid() and rol = 'dueño')
 $$;
 
--- ---------------------------------------------------------------------------
 -- Datos de la tienda
--- ---------------------------------------------------------------------------
 
 create table public.productos (
   tienda_id uuid not null default public.mi_tienda() references public.tiendas (id) on delete cascade,
@@ -155,9 +148,7 @@ create index turnos_cambios on public.turnos (tienda_id, actualizado_en);
 create index ventas_cambios on public.ventas (tienda_id, actualizado_en);
 create index fiado_cambios on public.fiado (tienda_id, actualizado_en);
 
--- El vendedor puede marcar favoritos, pero precio, costo y nombre solo los cambia el dueño.
--- Las existencias nunca se sobrescriben: se suman o restan con ajustar_stock, así dos equipos
--- vendiendo al tiempo no se pisan.
+-- El vendedor puede marcar favoritos, pero precio, costo y nombre solo los cambia el dueño
 create or replace function public.proteger_producto()
 returns trigger
 language plpgsql
@@ -179,9 +170,7 @@ end;
 $$;
 create trigger proteger before update on public.productos for each row execute function public.proteger_producto();
 
--- ---------------------------------------------------------------------------
 -- Seguridad (RLS)
--- ---------------------------------------------------------------------------
 
 alter table public.tiendas enable row level security;
 alter table public.miembros enable row level security;
@@ -223,9 +212,7 @@ create policy "anotar" on public.fiado for insert to authenticated with check (t
 
 revoke all on public.tiendas, public.miembros, public.productos, public.clientes, public.turnos, public.ventas, public.fiado from anon;
 
--- ---------------------------------------------------------------------------
 -- Funciones que llama la app
--- ---------------------------------------------------------------------------
 
 -- Crear la tienda: quien la crea queda como dueño.
 create or replace function public.crear_tienda(nombre_tienda text, mi_nombre text, mi_usuario text)
@@ -270,13 +257,11 @@ begin
 end;
 $$;
 
--- Reemplaza todos los datos de la tienda en una transacción: tienda de ejemplo, empezar en blanco
--- o restaurar una copia de seguridad. Solo el dueño.
+-- Reemplaza todos los datos de la tienda en una transacción
 create or replace function public.reemplazar_tienda(datos jsonb)
 returns void
 language plpgsql
--- Definer porque el cuaderno de fiado y las ventas no se pueden borrar desde la app; aquí se borra
--- solo lo de la tienda de quien llama, y solo si es el dueño.
+-- Definer porque el cuaderno de fiado y las ventas no se pueden borrar desde la app
 security definer
 set search_path = ''
 as $$
@@ -335,7 +320,7 @@ begin
 end;
 $$;
 
--- Quitar a un vendedor de la tienda (su usuario deja de tener acceso). Solo el dueño, y nunca al último dueño.
+-- Quitar a un vendedor de la tienda (su usuario deja de tener acceso)
 create or replace function public.quitar_miembro(miembro uuid)
 returns void
 language plpgsql

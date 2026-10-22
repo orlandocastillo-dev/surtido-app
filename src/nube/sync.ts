@@ -7,18 +7,13 @@ import { desde, type FilaCliente, type FilaFiado, type FilaProducto, type FilaTi
 
 const CADA = 15_000;
 const PAGINA = 1000;
-/** Se pide un poco antes del último cambio visto, por si una transacción terminó tarde. Mezclar dos veces no daña nada. */
+// Se pide un poco antes del último cambio visto, por si una transacción terminó tarde
 const SOLAPE_MS = 5_000;
 
 type Tabla = "productos" | "clientes" | "fiado" | "ventas" | "turnos";
 const TABLAS: Tabla[] = ["productos", "clientes", "fiado", "ventas", "turnos"];
 
-/**
- * Mantiene la copia del equipo y la base al día, en las dos direcciones:
- * - Sube: los cambios hechos aquí quedan en una cola guardada en el navegador y se envían en orden.
- *   Sin internet se acumulan y suben solos al volver la conexión.
- * - Baja: cada 15 segundos (y al volver a la pestaña) pide lo que otros equipos cambiaron.
- */
+// Mantiene la copia del equipo y la base al día, en las dos direcciones
 export class Sincronizador {
   private cola: Op[];
   private cursor: string | null;
@@ -94,7 +89,7 @@ export class Sincronizador {
     queueMicrotask(() => void this.empujar());
   }
 
-  /** Envía la cola en orden. Se detiene al primer error de conexión para no desordenar nada. */
+  // Envía la cola en orden
   async empujar(): Promise<void> {
     if (this.enviando) return;
     this.enviando = true;

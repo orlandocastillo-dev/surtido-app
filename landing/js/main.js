@@ -1,7 +1,4 @@
-/**
- * Surtido: interacciones de la landing.
- * JavaScript sin dependencias. Cada módulo se inicializa solo si su HTML existe.
- */
+// Surtido: interacciones de la landing
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -10,7 +7,7 @@ const formatCOP = (value) =>
     .format(value)
     .replace(/ /g, "");
 
-/* ---------- Menú móvil ---------- */
+// Menú móvil
 function initMenu() {
   const toggle = document.querySelector("[data-menu-toggle]");
   const menu = document.getElementById("menu");
@@ -37,7 +34,7 @@ function initMenu() {
   window.matchMedia("(min-width: 821px)").addEventListener("change", (e) => e.matches && setOpen(false));
 }
 
-/* ---------- Borde de la barra al hacer scroll ---------- */
+// Borde de la barra al hacer scroll
 function initNavShadow() {
   const nav = document.querySelector("[data-nav]");
   if (!nav) return;
@@ -46,7 +43,7 @@ function initNavShadow() {
   window.addEventListener("scroll", update, { passive: true });
 }
 
-/* ---------- Tema claro / oscuro ---------- */
+// Tema claro / oscuro
 function initTheme() {
   const button = document.querySelector("[data-theme-toggle]");
   if (!button) return;
@@ -73,7 +70,7 @@ function initTheme() {
   sync();
 }
 
-/* ---------- Pestañas accesibles (patrón WAI-ARIA) ---------- */
+// Pestañas accesibles (patrón WAI-ARIA)
 function initTabs() {
   document.querySelectorAll("[data-tabs]").forEach((container) => {
     const tabs = [...container.querySelectorAll('[role="tab"]')];
@@ -100,7 +97,7 @@ function initTabs() {
   });
 }
 
-/* ---------- Precios mensual / anual ---------- */
+// Precios mensual / anual
 function initBilling() {
   const buttons = document.querySelectorAll("[data-billing]");
   if (!buttons.length) return;
@@ -118,7 +115,7 @@ function initBilling() {
   buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.billing)));
 }
 
-/* ---------- Acordeón de preguntas ---------- */
+// Acordeón de preguntas
 function initAccordion() {
   document.querySelectorAll("[data-accordion]").forEach((list) => {
     list.addEventListener("click", (e) => {
@@ -131,7 +128,7 @@ function initAccordion() {
   });
 }
 
-/* ---------- Animación del total en el teléfono del hero ---------- */
+// Animación del total en el teléfono del hero
 function initHeroTotal() {
   const total = document.querySelector("[data-total]");
   if (!total || prefersReducedMotion) return;
@@ -154,7 +151,7 @@ function initHeroTotal() {
   }, start);
 }
 
-/* ---------- Año del pie de página ---------- */
+// Año del pie de página
 function initYear() {
   const el = document.querySelector("[data-year]");
   if (el) el.textContent = String(new Date().getFullYear());

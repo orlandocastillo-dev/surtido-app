@@ -9,10 +9,7 @@ export type CheckoutResult =
   | { ok: true; sale: Sale; change: number }
   | { ok: false; reason: "vacio" | "sin_cliente" | "efectivo_insuficiente" | "cupo_excedido"; message: string };
 
-/**
- * Cierra la venta del carrito. Valida, arma la venta con una copia de precios y costos
- * y la despacha como una sola acción que actualizan inventario, ventas, fiado y carrito.
- */
+// Cierra la venta del carrito
 export function checkout(options: { allowOverLimit?: boolean; now?: Date } = {}): AppThunk<CheckoutResult> {
   return (dispatch, getState) => {
     const state = getState();

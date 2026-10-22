@@ -9,7 +9,7 @@ export const selectCurrentUser = createSelector([(s: RootState) => s.auth], (aut
 
 export const selectHasAccount = (s: RootState) => s.auth.users.length > 0;
 
-/** Lo que puede hacer cada rol. El vendedor atiende; el dueño además administra. */
+// Lo que puede hacer cada rol
 export type Permission = "reportes" | "ajustes" | "editarProductos" | "anularVentas" | "usuarios";
 
 const OWNER_ONLY: Permission[] = ["reportes", "ajustes", "editarProductos", "anularVentas", "usuarios"];

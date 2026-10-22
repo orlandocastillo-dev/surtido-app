@@ -1,13 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/**
- * Conexión con Supabase. Se activa con VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY (en .env.local
- * o en las variables del proyecto en Vercel). Sin ellas, Surtido funciona como siempre: todo en el
- * navegador y sin internet.
- *
- * La llave "anon" es pública por diseño: lo que protege los datos son las políticas RLS de
- * supabase/migrations, que solo dejan ver a cada tienda lo suyo.
- */
+// Conexión con Supabase
 const config = () => ({
   url: import.meta.env.VITE_SUPABASE_URL as string | undefined,
   key: import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined,

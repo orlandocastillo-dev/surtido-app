@@ -248,9 +248,7 @@ function RegistroLocal() {
   );
 }
 
-// ---------------------------------------------------------------------------
 // Con Supabase: la tienda y sus usuarios viven en la nube
-// ---------------------------------------------------------------------------
 
 /** Mientras la app abre la tienda después de entrar. */
 function useAbriendo() {
@@ -517,10 +515,7 @@ export function Recuperar() {
   );
 }
 
-/**
- * El código que llega por correo. Al confirmarlo, Supabase abre la sesión y la app sigue sola
- * (o pasa a "contraseña nueva" si es para recuperarla).
- */
+// El código que llega por correo
 function CodigoCorreo({ email, tipo, boton }: { email: string; tipo: "signup" | "recovery"; boton: string }) {
   const [codigo, setCodigo] = useState("");
   const [error, setError] = useState<string | undefined>();

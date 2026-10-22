@@ -1,6 +1,6 @@
 import type { Customer, LedgerEntry, Product, Sale, Shift } from "../types";
 
-/** Filas de las tablas de Supabase (español, snake_case). Los numeric llegan como texto o número. */
+// Filas de las tablas de Supabase (español, snake_case)
 type Num = number | string;
 export interface FilaProducto { id: string; nombre: string; codigo: string | null; categoria: Product["category"]; precio: Num; costo: Num; stock: Num; minimo: Num; unidad: Product["unit"]; favorito: boolean; actualizado_en?: string }
 export interface FilaCliente { id: string; nombre: string; telefono: string; cupo: Num; creado_en: string; actualizado_en?: string }

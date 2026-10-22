@@ -200,9 +200,7 @@ describe("qué se sube por cada cambio", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // La app completa con la nube
-// ---------------------------------------------------------------------------
 
 function montar(b: Base, opciones: { confirmarCorreo?: boolean } = {}) {
   const c = clienteFalso(b, opciones);

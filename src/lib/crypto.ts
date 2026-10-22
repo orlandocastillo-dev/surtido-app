@@ -1,7 +1,4 @@
-/**
- * Contraseñas con PBKDF2 (Web Crypto, nativo del navegador): nunca se guarda la contraseña,
- * solo un hash con sal aleatoria por usuario y 150.000 iteraciones.
- */
+// Contraseñas con PBKDF2 (Web Crypto, nativo del navegador)
 const ITERATIONS = 150_000;
 
 function toBase64(bytes: Uint8Array): string {
