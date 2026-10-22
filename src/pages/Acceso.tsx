@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { nubeDisponible } from "../nube/cliente";
-import { CLAVE_MINIMA_NUBE, cambiarMiClave, correoParaEntrar, crearCuentaDueno, entrar as entrarNube, recuperarClave, reenviarConfirmacion } from "../nube/cuenta";
+import { CLAVE_MINIMA_NUBE, cambiarMiClave, correoParaEntrar, crearCuentaDueno, entrar as entrarNube, recuperarClave, reenviarConfirmacion, verificarCodigo } from "../nube/cuenta";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectCurrentUser, selectHasAccount } from "../features/auth/selectors";
 import { Icon } from "../components/Icon";
@@ -356,7 +356,7 @@ function RegistroNube() {
       <form className="form" onSubmit={submit} noValidate>
         <Field id="tienda" label="Nombre de la tienda" placeholder="Tienda Doña Rosa" error={errors.storeName} autoFocus />
         <Field id="nombre" label="Tu nombre" autoComplete="name" error={errors.name} />
-        <Field id="usuario" label="Tu correo" type="email" autoComplete="email" inputMode="email" error={errors.login} hint="Te llega un enlace para confirmar la cuenta." />
+        <Field id="usuario" label="Tu correo" type="email" autoComplete="email" inputMode="email" error={errors.login} hint="Te llega un código para confirmar la cuenta." />
         <div className="field-row">
           <Field id="clave" label="Contraseña" type="password" autoComplete="new-password" error={errors.password} hint={`Mínimo ${CLAVE_MINIMA_NUBE} caracteres.`} />
           <Field id="clave2" label="Repítela" type="password" autoComplete="new-password" error={errors.clave2} />
@@ -404,8 +404,9 @@ function ConfirmarCorreo({ email }: { email: string }) {
           <Icon name="check" size={26} />
         </span>
         <p>
-          Te enviamos un enlace a <strong>{email}</strong>. Ábrelo desde este dispositivo y tu tienda se crea sola con lo que elegiste.
+          Te enviamos un código de 6 dígitos a <strong>{email}</strong>. Escríbelo aquí, o toca el botón del correo desde cualquier celular o computador. Tu tienda se crea sola con lo que elegiste.
         </p>
+        <CodigoCorreo email={email} tipo="signup" boton="Confirmar" />
         <p className="muted small">Si no te llega en un par de minutos, revisa la carpeta de spam.</p>
         {aviso && <p className="muted small">{aviso}</p>}
         <button
@@ -432,10 +433,13 @@ export function Recuperar() {
 
   if (enviado) {
     return (
-      <AuthShell title="Revisa tu correo" subtitle="Te mandamos un enlace." footer={<Link to="/entrar">Volver a entrar</Link>}>
-        <p>
-          Si hay una tienda con <strong>{enviado}</strong>, te llegará un enlace para poner una contraseña nueva. Puede tardar un par de minutos; mira también en spam.
-        </p>
+      <AuthShell title="Revisa tu correo" subtitle="Te mandamos un código." footer={<Link to="/entrar">Volver a entrar</Link>}>
+        <div className="auth__mensaje">
+          <p>
+            Si hay una tienda con <strong>{enviado}</strong>, te llegará un código para poner una contraseña nueva. Puede tardar un par de minutos; mira también en spam.
+          </p>
+          <CodigoCorreo email={enviado} tipo="recovery" boton="Seguir" />
+        </div>
       </AuthShell>
     );
   }
@@ -457,7 +461,7 @@ export function Recuperar() {
       >
         <Field id="correo" label="Correo" type="email" autoComplete="email" inputMode="email" error={error ?? undefined} autoFocus />
         <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy}>
-          {busy ? "Enviando…" : "Enviar enlace"}
+          {busy ? "Enviando…" : "Enviar código"}
         </button>
         <p className="muted small center">Los vendedores no reciben correo: el dueño les cambia la contraseña desde Ajustes.</p>
       </form>
@@ -465,7 +469,49 @@ export function Recuperar() {
   );
 }
 
-/** Se abre desde el enlace del correo de recuperación. */
+/**
+ * El código que llega por correo. Al confirmarlo, Supabase abre la sesión y la app sigue sola
+ * (o pasa a "contraseña nueva" si es para recuperarla).
+ */
+function CodigoCorreo({ email, tipo, boton }: { email: string; tipo: "signup" | "recovery"; boton: string }) {
+  const [codigo, setCodigo] = useState("");
+  const [error, setError] = useState<string | undefined>();
+  const [busy, setBusy] = useState(false);
+  return (
+    <form
+      className="form codigo-form"
+      noValidate
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        const r = await verificarCodigo(email, codigo, tipo);
+        if (!r.ok) {
+          setError(r.message);
+          setBusy(false);
+        }
+      }}
+    >
+      <Field
+        id="codigo"
+        label="Código"
+        className="codigo"
+        inputMode="numeric"
+        autoComplete="one-time-code"
+        maxLength={10}
+        placeholder="000000"
+        value={codigo}
+        onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
+        error={error}
+        autoFocus
+      />
+      <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={busy || codigo.length < 6}>
+        {busy ? "Revisando…" : boton}
+      </button>
+    </form>
+  );
+}
+
+/** Se abre con el código o el enlace del correo de recuperación. */
 export function NuevaClave() {
   const navigate = useNavigate();
   const user = useAppSelector(selectCurrentUser);

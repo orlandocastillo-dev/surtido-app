@@ -296,6 +296,31 @@ describe("la app con cuentas en la nube", () => {
     expect(b.tablas.productos).toHaveLength(0);
   });
 
+  it("con confirmación de correo, la tienda se crea al escribir el código", async () => {
+    const b = nuevaBase();
+    const { router, store } = montar(b, { confirmarCorreo: true });
+    await screen.findByRole("heading", { name: "Entrar" });
+    await router.navigate("/registro");
+    await screen.findByLabelText("Nombre de la tienda");
+    await escribir("Nombre de la tienda", "Tienda La Esquina");
+    await escribir("Tu nombre", "Rosa Méndez");
+    await escribir("Tu correo", "rosa@correo.co");
+    await escribir(/^Contraseña/, "clave-segura-1");
+    await escribir("Repítela", "clave-segura-1");
+    await userEvent.click(screen.getByRole("radio", { name: /Empezar en blanco/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Crear mi tienda" }));
+    expect(await screen.findByRole("heading", { name: "Confirma tu correo" })).toBeInTheDocument();
+
+    await escribir("Código", "111111");
+    await userEvent.click(screen.getByRole("button", { name: "Confirmar" }));
+    expect(await screen.findByText(/no es correcto o ya venció/)).toBeInTheDocument();
+
+    await escribir("Código", "123456");
+    await userEvent.click(screen.getByRole("button", { name: "Confirmar" }));
+    await waitFor(() => expect(store.getState().nube.modo).toBe("nube"), { timeout: 3000 });
+    expect(b.tablas.tiendas).toHaveLength(1);
+  });
+
   it("el dueño crea un vendedor y el vendedor entra con su celular", async () => {
     const b = nuevaBase();
     const { router, store } = montar(b);

@@ -131,6 +131,15 @@ export function clienteFalso(b: Base, opciones: { confirmarCorreo?: boolean } = 
         abrir(u);
         return { data: { user: sesion!.user }, error: null };
       },
+      /** En las pruebas el código del correo es siempre 123456. */
+      async verifyOtp(p: { email?: string; token?: string; token_hash?: string; type: string }) {
+        const u = b.usuarios.find((x) => x.email === p.email);
+        if (!u || p.token !== "123456") return err("otp_expired", "Token has expired or is invalid");
+        u.confirmado = true;
+        abrir(u);
+        avisar(p.type === "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN");
+        return { data: { session: sesion }, error: null };
+      },
       resetPasswordForEmail: async () => ({ data: {}, error: null }),
       resend: async () => ({ data: {}, error: null }),
     },

@@ -2012,3 +2012,17 @@ a {
     justify-content: center;
   }
 }
+
+/* Código de confirmación que llega por correo */
+.codigo-form {
+  gap: 0.75rem;
+}
+input.codigo {
+  font-size: 1.6rem;
+  letter-spacing: 0.45em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+input.codigo::placeholder {
+  opacity: 0.3;
+}

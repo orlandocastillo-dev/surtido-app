@@ -4,7 +4,7 @@ import { createSeedState } from "../data/seed";
 import { nubeConectada, nubeEstado, nubeIniciando, nubeLista } from "../features/nube/nubeSlice";
 import { datosParaReemplazar } from "./cambios";
 import { nube, nubeDisponible } from "./cliente";
-import { cargarMiembros, crearTienda, miMembresia, type Pendiente } from "./cuenta";
+import { abrirEnlaceDelCorreo, cargarMiembros, crearTienda, miMembresia, type Pendiente } from "./cuenta";
 import { Sincronizador } from "./sync";
 
 let store: AppStore;
@@ -41,6 +41,9 @@ export async function iniciarNube(s: AppStore) {
       // Supabase pide no hacer otras llamadas dentro de este aviso: se atiende en el siguiente ciclo.
       setTimeout(() => void manejar(db, evento, sesion), 0);
     });
+    // El botón del correo (en este u otro equipo): confirma la cuenta o abre el cambio de contraseña.
+    const enlace = await abrirEnlaceDelCorreo(db);
+    if (enlace && !enlace.ok) store.dispatch(nubeEstado({ error: enlace.message }));
   } catch {
     store.dispatch(nubeLista());
   }

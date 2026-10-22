@@ -2,6 +2,10 @@
 <html lang="es-CO">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Si el botón del correo abrió la presentación en vez de la app, se pasa a la app con el mismo enlace.
+      if (/[?&](token_hash|code|error_description)=/.test(location.search)) location.replace("app/" + location.search);
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Surtido | Ventas, inventario y fiado para tu tienda</title>
     <meta
@@ -275,7 +279,7 @@
                 <li>Ventas e inventario</li>
                 <li>Un vendedor</li>
               </ul>
-              <a class="btn btn--ghost btn--block" href="app/">Crear mi tienda</a>
+              <a class="btn btn--ghost btn--block" href="app/#/registro">Crear mi tienda</a>
             </article>
 
             <article class="plan plan--featured">
@@ -289,7 +293,7 @@
                 <li>Reportes y cuadre de caja</li>
                 <li>Hasta 3 vendedores</li>
               </ul>
-              <a class="btn btn--primary btn--block" href="app/">Probar 30 días gratis</a>
+              <a class="btn btn--primary btn--block" href="app/#/registro">Probar 30 días gratis</a>
             </article>
 
             <article class="plan">
@@ -346,7 +350,7 @@
       <section class="cta">
         <div class="container cta__inner">
           <h2>Tu tienda ya trabaja duro. Que las cuentas no.</h2>
-          <a class="btn btn--light btn--lg" href="app/">Probar la app</a>
+          <a class="btn btn--light btn--lg" href="app/#/registro">Probar la app</a>
         </div>
       </section>
     </main>

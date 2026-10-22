@@ -32,6 +32,8 @@ export function mensaje(error: unknown): string {
   if (/weak_password|Password should/i.test(m)) return `La contraseña es muy débil. Usa al menos ${CLAVE_MINIMA_NUBE} caracteres, con letras y números.`;
   if (/same_password/i.test(m)) return "La nueva contraseña debe ser distinta de la anterior.";
   if (/rate limit|too many/i.test(m) || e?.status === 429) return "Hiciste muchos intentos seguidos. Espera un minuto.";
+  // Supabase responde lo mismo si el código está mal o si ya venció.
+  if (/otp_expired|otp_disabled|token has expired|is invalid/i.test(m)) return "El código no es correcto o ya venció. Revísalo o pide uno nuevo.";
   if (/fetch|network|Failed to/i.test(m)) return "No hay internet. Revisa la conexión e inténtalo de nuevo.";
   return "Algo salió mal. Inténtalo de nuevo en un momento.";
 }
@@ -50,7 +52,7 @@ export interface Pendiente {
 
 export async function crearCuentaDueno(email: string, clave: string, p: Pendiente): Promise<Resultado & { confirmar?: boolean }> {
   const correo = email.trim().toLowerCase();
-  if (!esCorreo(correo)) return { ok: false, field: "login", message: "Para la cuenta del dueño usa un correo: ahí te llega el enlace para confirmarla." };
+  if (!esCorreo(correo)) return { ok: false, field: "login", message: "Para la cuenta del dueño usa un correo: ahí te llega el código para confirmarla." };
   if (clave.length < CLAVE_MINIMA_NUBE) return { ok: false, field: "password", message: `La contraseña debe tener al menos ${CLAVE_MINIMA_NUBE} caracteres.` };
   try {
     const db = await nube();
@@ -86,6 +88,40 @@ export async function recuperarClave(email: string): Promise<Resultado> {
     const db = await nube();
     const { error } = await db.auth.resetPasswordForEmail(correo, { redirectTo: window.location.origin + window.location.pathname });
     return error ? { ok: false, message: mensaje(error) } : { ok: true };
+  } catch (e) {
+    return { ok: false, message: mensaje(e) };
+  }
+}
+
+/**
+ * Confirma el correo (o abre el cambio de contraseña) con el código que llegó por correo.
+ * A diferencia del enlace, sirve desde cualquier dispositivo.
+ */
+export async function verificarCodigo(email: string, codigo: string, tipo: "signup" | "recovery"): Promise<Resultado> {
+  const token = codigo.replace(/\s/g, "");
+  if (!/^\d{6,10}$/.test(token)) return { ok: false, field: "codigo", message: "Escribe el código de 6 dígitos que te llegó." };
+  try {
+    const db = await nube();
+    const { error } = await db.auth.verifyOtp({ email: email.trim().toLowerCase(), token, type: tipo });
+    return error ? { ok: false, field: "codigo", message: mensaje(error) } : { ok: true };
+  } catch (e) {
+    return { ok: false, message: mensaje(e) };
+  }
+}
+
+/**
+ * El botón del correo trae ?token_hash=...&type=... y funciona aunque se abra en otro celular
+ * o computador. Devuelve null si la dirección no trae nada.
+ */
+export async function abrirEnlaceDelCorreo(db: SupabaseClient): Promise<Resultado | null> {
+  const q = new URLSearchParams(window.location.search);
+  const token_hash = q.get("token_hash");
+  const tipo = q.get("type");
+  if (!token_hash || !tipo) return null;
+  window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+  try {
+    const { error } = await db.auth.verifyOtp({ token_hash, type: tipo as "signup" | "recovery" | "email" });
+    return error ? { ok: false, message: "El enlace del correo venció o ya se usó. Entra con tu contraseña o pide uno nuevo." } : { ok: true };
   } catch (e) {
     return { ok: false, message: mensaje(e) };
   }
