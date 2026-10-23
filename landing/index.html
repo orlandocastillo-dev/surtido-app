@@ -4,49 +4,36 @@
     <meta charset="UTF-8" />
     <script src="js/inicio.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Surtido | Ventas, inventario y fiado para tu tienda</title>
+    <title>Surti2 | Ventas, inventario y fiado para la tienda de barrio</title>
     <meta
       name="description"
-      content="Surtido es la app para tiendas de barrio: registra ventas en segundos, controla el inventario y lleva el fiado de tus clientes desde el celular."
+      content="Surti2 es la app de la tienda de barrio: registra ventas, descuenta el inventario, lleva el fiado y cuadra la caja desde el celular. Sigue funcionando sin internet."
     />
-    <meta name="theme-color" content="#0b6e4f" />
-    <meta property="og:title" content="Surtido, la app de la tienda de barrio" />
-    <meta property="og:description" content="Ventas, inventario y fiado en el celular. Funciona sin internet." />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:title" content="Surti2, la app de la tienda de barrio" />
+    <meta property="og:description" content="Ventas, inventario, fiado y caja en el celular. Sigue funcionando sin internet." />
     <meta property="og:type" content="website" />
     <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
 
-    <link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="fonts/instrument-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/plex-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/plex-600.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
-
   </head>
   <body>
     <a class="skip" href="#contenido">Saltar al contenido</a>
 
-    <header class="nav" data-nav>
+    <header class="nav">
       <div class="container nav__inner">
-        <a class="logo" href="#" aria-label="Surtido, inicio">
-          <svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M5 12h22l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
-            <path d="M11 12V9a5 5 0 0 1 10 0v3" fill="none" />
-          </svg>
-          surtido
-        </a>
+        <a class="logo" href="#" aria-label="Surti2, inicio">Surti<span class="logo__dos" aria-hidden="true">2</span></a>
 
         <nav class="nav__links" id="menu" aria-label="Principal">
-          <a href="#producto">Producto</a>
-          <a href="#como-empezar">Cómo empezar</a>
-          <a href="#precios">Precios</a>
+          <a href="#dia">Un día en la tienda</a>
+          <a href="#fiado">Fiado</a>
           <a href="#preguntas">Preguntas</a>
-          <a class="nav__login" href="app/">Entrar</a>
         </nav>
 
         <div class="nav__actions">
-          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar a tema oscuro">
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-moon"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" /></svg>
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-sun"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-          </button>
-          <a class="btn btn--primary nav__cta" href="#precios">Probar gratis</a>
+          <a class="btn btn--primary nav__cta" href="app/">Abrir la app</a>
           <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
             <span class="sr-only">Abrir menú</span>
             <span aria-hidden="true"></span>
@@ -56,325 +43,194 @@
     </header>
 
     <main id="contenido">
-      <!-- Hero -->
       <section class="hero">
         <div class="container hero__grid">
           <div class="hero__copy">
-            <h1>Cierra la caja en cinco minutos, no en una hora.</h1>
+            <h1>Lo que vendes, lo que tienes y lo que te deben. En el celular.</h1>
             <p class="hero__lead">
-              Surtido registra cada venta, descuenta el inventario y lleva el fiado de tus clientes desde el celular.
-              Funciona sin internet y se sincroniza cuando vuelve la señal.
+              Surti2 registra cada venta, descuenta el inventario, lleva el cuaderno del fiado y cuadra la caja al final del día.
+              Si se va el internet, sigues vendiendo.
             </p>
             <div class="hero__ctas">
-              <a class="btn btn--primary btn--lg" href="#precios">Probar 30 días gratis</a>
-              <a class="btn btn--ghost btn--lg" href="app/">Abrir la app</a>
+              <a class="btn btn--primary btn--lg" href="app/">Probar con la tienda de ejemplo</a>
+              <a class="btn btn--line btn--lg" href="app/#/registro">Crear mi tienda</a>
             </div>
-            <p class="hero__note">Sin tarjeta de crédito. Cancelas cuando quieras.</p>
+            <p class="hero__note">Gratis y sin descargar nada: abre en el navegador del celular o del computador.</p>
           </div>
 
-          <!-- Simulación de una venta: se anima una sola vez al cargar. -->
-          <div class="phone" aria-label="Ejemplo de una venta registrada en Surtido" role="img">
-            <div class="phone__screen">
-              <div class="phone__bar">
-                <span>Venta #1.284</span>
-                <span class="phone__online">Sin internet</span>
-              </div>
-              <ul class="ticket" data-ticket>
-                <li style="--i: 0"><span>Leche entera 1 L</span><span>2 × $4.200</span></li>
-                <li style="--i: 1"><span>Pan tajado</span><span>$6.900</span></li>
-                <li style="--i: 2"><span>Huevos AA × 12</span><span>$13.500</span></li>
-                <li style="--i: 3"><span>Café molido 250 g</span><span>$11.800</span></li>
-              </ul>
-              <div class="phone__total">
-                <span>Total</span>
-                <strong data-total data-value="40600">$40.600</strong>
-              </div>
-              <div class="phone__pay">
-                <span class="chip">Efectivo</span>
-                <span class="chip chip--active">Nequi</span>
-                <span class="chip">Fiado</span>
-              </div>
-              <p class="phone__done" data-done>Venta registrada. Inventario actualizado.</p>
+          <!-- Una venta como se ve en la app; las líneas entran una por una al cargar -->
+          <figure class="venta" role="img" aria-label="Venta de leche, pan, huevos y café por $40.600, pagada con Nequi">
+            <div class="venta__head">
+              <p class="venta__titulo">Venta actual</p>
+              <p class="venta__caja">Caja abierta</p>
             </div>
-          </div>
+            <ul class="venta__lineas">
+              <li style="--i: 0"><span>Leche entera 1 L<small>2 × $4.200</small></span><span>$8.400</span></li>
+              <li style="--i: 1"><span>Pan tajado 500 g<small>1 × $6.900</small></span><span>$6.900</span></li>
+              <li style="--i: 2"><span>Huevos AA × 12<small>1 × $13.500</small></span><span>$13.500</span></li>
+              <li style="--i: 3"><span>Café molido 250 g<small>1 × $11.800</small></span><span>$11.800</span></li>
+            </ul>
+            <p class="venta__total"><span>Total</span><strong>$40.600</strong></p>
+            <div class="venta__pagos" aria-hidden="true">
+              <span>Efectivo</span><span class="is-on">Nequi</span><span>Daviplata</span><span>Fiado</span>
+            </div>
+            <p class="venta__cobrar">Cobrar $40.600</p>
+          </figure>
         </div>
       </section>
 
-      <!-- Franja de capacidades -->
-      <section class="strip" aria-label="Lo que incluye">
-        <ul class="container strip__list">
-          <li>Funciona sin internet</li>
-          <li>Cobros con Nequi y Daviplata</li>
-          <li>Escáner de códigos con la cámara</li>
-          <li>Varios vendedores, una sola caja</li>
-        </ul>
-      </section>
-
-      <!-- Producto (pestañas) -->
-      <section class="section" id="producto">
+      <section class="section" id="dia">
         <div class="container">
-          <div class="section__head">
-            <h2>Todo lo que pasa en el mostrador, en un solo lugar</h2>
-            <p>Diseñado con tenderos de Bogotá y Medellín, para usarse con una mano mientras atiendes con la otra.</p>
-          </div>
-
-          <div class="tabs" data-tabs>
-            <div class="tabs__list" role="tablist" aria-label="Funciones de Surtido">
-              <button role="tab" id="tab-vender" aria-controls="panel-vender" aria-selected="true">Vender</button>
-              <button role="tab" id="tab-inventario" aria-controls="panel-inventario" aria-selected="false" tabindex="-1">Inventario</button>
-              <button role="tab" id="tab-fiado" aria-controls="panel-fiado" aria-selected="false" tabindex="-1">Fiado</button>
-              <button role="tab" id="tab-reportes" aria-controls="panel-reportes" aria-selected="false" tabindex="-1">Reportes</button>
-            </div>
-
-            <div class="tabs__panel" role="tabpanel" id="panel-vender" aria-labelledby="tab-vender" tabindex="0">
-              <div class="feature">
-                <div class="feature__text">
-                  <h3>Una venta en tres toques</h3>
-                  <p>Escanea con la cámara o busca por nombre, elige cómo te pagan y listo. El cambio se calcula solo.</p>
-                  <ul class="checks">
-                    <li>Productos favoritos a un toque: gaseosa, pan, huevos.</li>
-                    <li>Venta por peso o por unidad, con precios redondeados a $50.</li>
-                    <li>Recibo por WhatsApp si el cliente lo pide.</li>
-                  </ul>
-                </div>
-                <div class="feature__visual visual-sell" aria-hidden="true">
-                  <div class="keypad">
-                    <span>Gaseosa 400 ml</span><span>Pan blandito</span><span>Huevo</span><span>Arroz 500 g</span><span>Panela</span><span>Leche 1 L</span>
-                  </div>
-                  <div class="change"><span>Recibido $50.000</span><strong>Cambio $9.400</strong></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tabs__panel" role="tabpanel" id="panel-inventario" aria-labelledby="tab-inventario" tabindex="0" hidden>
-              <div class="feature">
-                <div class="feature__text">
-                  <h3>Sabes qué pedir antes de que se acabe</h3>
-                  <p>Cada venta descuenta del inventario. Surtido te avisa cuando un producto baja del mínimo y arma el pedido para el proveedor.</p>
-                  <ul class="checks">
-                    <li>Alertas de productos por agotarse y por vencerse.</li>
-                    <li>Pedido sugerido según lo que vendes cada semana.</li>
-                    <li>Margen de ganancia por producto.</li>
-                  </ul>
-                </div>
-                <div class="feature__visual" aria-hidden="true">
-                  <ul class="stock">
-                    <li><span>Aceite 1 L</span><span class="stock__bar"><i style="--v: 12%"></i></span><span class="stock__tag stock__tag--low">Pedir</span></li>
-                    <li><span>Arroz 500 g</span><span class="stock__bar"><i style="--v: 68%"></i></span><span class="stock__tag">34 und.</span></li>
-                    <li><span>Gaseosa 400 ml</span><span class="stock__bar"><i style="--v: 25%"></i></span><span class="stock__tag stock__tag--low">Pedir</span></li>
-                    <li><span>Panela</span><span class="stock__bar"><i style="--v: 90%"></i></span><span class="stock__tag">45 und.</span></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="tabs__panel" role="tabpanel" id="panel-fiado" aria-labelledby="tab-fiado" tabindex="0" hidden>
-              <div class="feature">
-                <div class="feature__text">
-                  <h3>El cuaderno de fiado, pero que no se pierde</h3>
-                  <p>Anota lo que te quedan debiendo con nombre y fecha. Cuando llegue el día de pago, envía el recordatorio por WhatsApp con un toque.</p>
-                  <ul class="checks">
-                    <li>Límite de crédito por cliente.</li>
-                    <li>Abonos parciales con historial.</li>
-                    <li>Mensaje de cobro amable y ya redactado.</li>
-                  </ul>
-                </div>
-                <div class="feature__visual" aria-hidden="true">
-                  <ul class="ledger">
-                    <li><span>Doña Marta</span><span>$38.500</span></li>
-                    <li><span>Don Hernando</span><span>$12.000</span></li>
-                    <li class="ledger__due"><span>Yesenia (vence hoy)</span><span>$64.200</span></li>
-                    <li><span>Carlos, el del taller</span><span>$7.800</span></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="tabs__panel" role="tabpanel" id="panel-reportes" aria-labelledby="tab-reportes" tabindex="0" hidden>
-              <div class="feature">
-                <div class="feature__text">
-                  <h3>Cuánto vendiste y cuánto ganaste, sin sumar a mano</h3>
-                  <p>Al cerrar el día ves ventas, ganancia, efectivo esperado en caja y los productos que más salieron.</p>
-                  <ul class="checks">
-                    <li>Cuadre de caja con diferencia en efectivo.</li>
-                    <li>Comparación con la semana anterior.</li>
-                    <li>Exporta a Excel para tu contador.</li>
-                  </ul>
-                </div>
-                <div class="feature__visual" aria-hidden="true">
-                  <div class="week">
-                    <div class="week__bars">
-                      <span style="--h: 52%" data-day="L"></span>
-                      <span style="--h: 48%" data-day="M"></span>
-                      <span style="--h: 61%" data-day="M"></span>
-                      <span style="--h: 57%" data-day="J"></span>
-                      <span style="--h: 78%" data-day="V"></span>
-                      <span style="--h: 100%" data-day="S"></span>
-                      <span style="--h: 70%" data-day="D"></span>
-                    </div>
-                    <p class="week__sum"><span>Ventas de la semana</span><strong>$4.318.600</strong></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Cómo empezar -->
-      <section class="section section--alt" id="como-empezar">
-        <div class="container">
-          <div class="section__head">
-            <h2>Empiezas a vender hoy mismo</h2>
-          </div>
-          <ol class="steps">
+          <h2 class="section__title">Un día en la tienda con Surti2</h2>
+          <ol class="dia">
             <li>
-              <h3>Descarga la app</h3>
-              <p>Android 8 o superior. Creas tu tienda con tu número de celular, sin contraseñas que olvidar.</p>
+              <span class="hora">6:30 a. m.</span>
+              <div>
+                <h3>Abres la caja</h3>
+                <p>Anotas la base con la que arrancas. Desde ahí la app sabe cuánta plata debería haber en el cajón.</p>
+              </div>
             </li>
             <li>
-              <h3>Carga tus productos</h3>
-              <p>Escanea los códigos de lo que tienes en estantería o elige del catálogo de 6.000 productos de consumo masivo.</p>
+              <span class="hora">7:42 a. m.</span>
+              <div>
+                <h3>Vendes en tres toques</h3>
+                <p>Los productos de siempre están a un toque, o los buscas por nombre o con el código de barras. Eliges cómo pagan y el cambio sale solo.</p>
+              </div>
             </li>
             <li>
-              <h3>Haz tu primera venta</h3>
-              <p>Desde ese momento el inventario y la caja se llevan solos. Si te enredas, te ayudamos por WhatsApp.</p>
+              <span class="hora">11:15 a. m.</span>
+              <div>
+                <h3>"Deme $2.000 de tomate"</h3>
+                <p>Lo que se vende por peso se cobra por kilo o por valor. La app calcula cuánto es y lo descuenta del inventario.</p>
+              </div>
+            </li>
+            <li>
+              <span class="hora">3:00 p. m.</span>
+              <div>
+                <h3>Doña Marta lleva fiado</h3>
+                <p>Queda anotado en su cuenta, con su cupo. Cuando toque cobrar, le mandas el recordatorio por WhatsApp.</p>
+              </div>
+            </li>
+            <li>
+              <span class="hora">6:20 p. m.</span>
+              <div>
+                <h3>Se fue el internet</h3>
+                <p>Sigues vendiendo. Lo que hagas queda guardado en el celular y sube solo cuando vuelve la señal.</p>
+              </div>
+            </li>
+            <li>
+              <span class="hora">9:10 p. m.</span>
+              <div>
+                <h3>Cierras la caja</h3>
+                <p>Cuentas el efectivo y la app te dice si cuadró, si sobra o si falta. Las ventas del día quedan en el reporte.</p>
+              </div>
             </li>
           </ol>
         </div>
       </section>
 
-      <!-- Precios -->
-      <section class="section" id="precios">
-        <div class="container">
-          <div class="section__head section__head--center">
-            <h2>Un precio que se paga con lo que dejas de perder</h2>
-            <div class="billing" role="group" aria-label="Periodo de facturación">
-              <button type="button" data-billing="mensual" aria-pressed="true">Mensual</button>
-              <button type="button" data-billing="anual" aria-pressed="false">Anual <span class="billing__save">2 meses gratis</span></button>
-            </div>
+      <section class="fiado" id="fiado">
+        <div class="container fiado__grid">
+          <div class="fiado__texto">
+            <h2>El fiado, claro y al día</h2>
+            <p>Cada cliente tiene su cuenta con lo que lleva, lo que abona y el cupo que le das. Ves de un vistazo quién lleva más de quince días sin abonar.</p>
+            <p>El mensaje de cobro ya viene escrito y con buena educación. Solo lo envías.</p>
           </div>
-
-          <div class="plans">
-            <article class="plan">
-              <h3>Tienda</h3>
-              <p class="plan__desc">Para empezar a dejar el cuaderno.</p>
-              <p class="plan__price"><span data-price data-mensual="0" data-anual="0">$0</span><small>siempre</small></p>
-              <ul class="checks">
-                <li>Hasta 300 productos</li>
-                <li>Ventas e inventario</li>
-                <li>Un vendedor</li>
-              </ul>
-              <a class="btn btn--ghost btn--block" href="app/#/registro">Crear mi tienda</a>
-            </article>
-
-            <article class="plan plan--featured">
-              <p class="plan__badge">El que más eligen</p>
-              <h3>Tienda Plus</h3>
-              <p class="plan__desc">Para la tienda que ya tiene clientela fija.</p>
-              <p class="plan__price"><span data-price data-mensual="39900" data-anual="33250">$39.900</span><small data-period>al mes</small></p>
-              <ul class="checks">
-                <li>Productos ilimitados</li>
-                <li>Fiado con recordatorios por WhatsApp</li>
-                <li>Reportes y cuadre de caja</li>
-                <li>Hasta 3 vendedores</li>
-              </ul>
-              <a class="btn btn--primary btn--block" href="app/#/registro">Probar 30 días gratis</a>
-            </article>
-
-            <article class="plan">
-              <h3>Minimercado</h3>
-              <p class="plan__desc">Varias cajas o más de una sede.</p>
-              <p class="plan__price"><span data-price data-mensual="89900" data-anual="74900">$89.900</span><small data-period>al mes</small></p>
-              <ul class="checks">
-                <li>Todo lo de Tienda Plus</li>
-                <li>Cajas y vendedores ilimitados</li>
-                <li>Facturación electrónica DIAN</li>
-                <li>Soporte prioritario</li>
-              </ul>
-              <a class="btn btn--ghost btn--block" href="#">Hablar con ventas</a>
-            </article>
+          <div class="cuaderno" aria-hidden="true">
+            <p class="cuaderno__titulo">Clientes con saldo</p>
+            <ul>
+              <li><span>Luz Dary Ortega<small>Abonó hace 3 días, cupo $100.000</small></span><span>$71.100</span></li>
+              <li><span>Hernando Ríos<small>Cupo $80.000</small></span><span>$69.500</span></li>
+              <li class="cuaderno__vence"><span>Carlos, el del taller<small>16 días sin abonar</small></span><span>$23.200</span></li>
+              <li><span>Marta Pérez<small>Cupo $150.000</small></span><span>$17.750</span></li>
+              <li class="cuaderno__pago"><span>Yesenia Barrios<small>Pagó todo ayer</small></span><span>$0</span></li>
+            </ul>
           </div>
-          <p class="plans__note">Precios en pesos colombianos, IVA incluido.</p>
         </div>
       </section>
 
-      <!-- Preguntas -->
-      <section class="section section--alt" id="preguntas">
+      <section class="section" id="tienda">
+        <div class="container">
+          <h2 class="section__title">Pensada para el mostrador</h2>
+          <dl class="hecha">
+            <div>
+              <dt>Varios celulares, una caja</dt>
+              <dd>El dueño crea la tienda y agrega a sus vendedores. Si dos venden lo mismo al tiempo, el inventario descuenta las dos ventas.</dd>
+            </div>
+            <div>
+              <dt>Cada quien con su permiso</dt>
+              <dd>El vendedor vende y cobra, pero no puede cambiar precios ni anular ventas. Eso lo controla la base de datos, no solo la pantalla.</dd>
+            </div>
+            <div>
+              <dt>Nequi, Daviplata y efectivo</dt>
+              <dd>Cada venta queda con su forma de pago, y al cerrar la caja ves cuánto entró por cada una.</dd>
+            </div>
+            <div>
+              <dt>El pedido para el proveedor</dt>
+              <dd>Cuando un producto baja del mínimo, aparece en la lista de pedir. La mandas por WhatsApp con un toque.</dd>
+            </div>
+            <div>
+              <dt>Las cuentas para el contador</dt>
+              <dd>Ventas y ganancia de la semana, y todo se descarga en Excel.</dd>
+            </div>
+            <div>
+              <dt>Se instala como app</dt>
+              <dd>Desde el navegador la agregas a la pantalla del celular y abre como cualquier otra aplicación.</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="section section--pared" id="preguntas">
         <div class="container faq">
-          <h2>Preguntas frecuentes</h2>
+          <h2 class="section__title">Preguntas</h2>
           <div class="faq__list" data-accordion>
             <div class="faq__item">
               <h3><button type="button" aria-expanded="false" aria-controls="r1" id="q1">¿Qué pasa si se va el internet?</button></h3>
               <div class="faq__answer" id="r1" role="region" aria-labelledby="q1" hidden>
-                <p>Sigues vendiendo normal. Todo se guarda en el celular y se sincroniza solo cuando vuelve la conexión.</p>
+                <p>Sigues vendiendo normal. Los cambios quedan en el celular y se suben solos cuando vuelve la conexión.</p>
               </div>
             </div>
             <div class="faq__item">
               <h3><button type="button" aria-expanded="false" aria-controls="r2" id="q2">¿Necesito comprar un lector de códigos?</button></h3>
               <div class="faq__answer" id="r2" role="region" aria-labelledby="q2" hidden>
-                <p>No. La cámara del celular lee los códigos de barras. Si ya tienes un lector USB o Bluetooth, también funciona.</p>
+                <p>No. En Android la cámara del celular lee el código de barras. Si ya tienes un lector USB, también funciona.</p>
               </div>
             </div>
             <div class="faq__item">
-              <h3><button type="button" aria-expanded="false" aria-controls="r3" id="q3">¿Mis datos están seguros?</button></h3>
+              <h3><button type="button" aria-expanded="false" aria-controls="r3" id="q3">¿Cuánto cuesta?</button></h3>
               <div class="faq__answer" id="r3" role="region" aria-labelledby="q3" hidden>
-                <p>Se guardan cifrados y con copia diaria. Si pierdes el celular, entras desde otro con tu número y recuperas todo.</p>
+                <p>Nada. Surti2 es un proyecto de portafolio y se puede usar gratis.</p>
               </div>
             </div>
             <div class="faq__item">
-              <h3><button type="button" aria-expanded="false" aria-controls="r4" id="q4">¿Puedo cambiar de plan después?</button></h3>
+              <h3><button type="button" aria-expanded="false" aria-controls="r4" id="q4">¿Puedo probarla sin crear una cuenta?</button></h3>
               <div class="faq__answer" id="r4" role="region" aria-labelledby="q4" hidden>
-                <p>Sí, subes o bajas de plan cuando quieras y solo pagas la diferencia del mes.</p>
+                <p>Sí. "Probar con la tienda de ejemplo" abre una tienda con productos, clientes y una semana de ventas. Lo que cambies ahí se queda en tu navegador.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- CTA final -->
-      <section class="cta">
-        <div class="container cta__inner">
-          <h2>Tu tienda ya trabaja duro. Que las cuentas no.</h2>
-          <a class="btn btn--light btn--lg" href="app/#/registro">Probar la app</a>
+      <section class="cierre">
+        <div class="container cierre__inner">
+          <h2>Ábrela y haz tu primera venta de prueba.</h2>
+          <a class="btn btn--primary btn--lg" href="app/">Probar con la tienda de ejemplo</a>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <div class="container footer__grid">
-        <div>
-          <a class="logo" href="#">
-            <svg class="logo__mark" viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M5 12h22l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
-              <path d="M11 12V9a5 5 0 0 1 10 0v3" fill="none" />
-            </svg>
-            surtido
-          </a>
-          <p class="footer__tag">Hecho en Colombia para las tiendas de barrio.</p>
-        </div>
-        <nav aria-label="Producto">
-          <h2>Producto</h2>
-          <a href="#producto">Funciones</a>
-          <a href="#precios">Precios</a>
-          <a href="#preguntas">Preguntas</a>
+      <div class="container footer__inner">
+        <p class="logo logo--chico">Surti<span class="logo__dos" aria-hidden="true">2</span></p>
+        <nav aria-label="Más">
+          <a href="app/">Abrir la app</a>
+          <a href="terminos.html">Términos</a>
+          <a href="privacidad.html">Privacidad</a>
+          <a href="https://github.com/orlandocastillo-dev/surtido-app">Código en GitHub</a>
         </nav>
-        <nav aria-label="Empresa">
-          <h2>Empresa</h2>
-          <a href="#">Nosotros</a>
-          <a href="#">Blog para tenderos</a>
-          <a href="#">Trabaja con nosotros</a>
-        </nav>
-        <nav aria-label="Ayuda">
-          <h2>Ayuda</h2>
-          <a href="#">Centro de ayuda</a>
-          <a href="#">WhatsApp de soporte</a>
-          <a href="terminos.html">Términos y condiciones</a>
-          <a href="privacidad.html">Política de privacidad</a>
-        </nav>
-      </div>
-      <div class="container footer__legal">
-        <p>© <span data-year>2026</span> Surtido. Marca ficticia creada para un proyecto de portafolio.</p>
+        <p class="footer__legal">© <span data-year>2026</span> Surti2. Marca ficticia de un proyecto de portafolio de Orlando Castillo.</p>
       </div>
     </footer>
 

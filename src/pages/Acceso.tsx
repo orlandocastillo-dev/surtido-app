@@ -17,16 +17,12 @@ function AuthShell({ title, subtitle, children, footer, note }: { title: string;
       {/* La app vive en /app/ y la presentación en la raíz; en el archivo portátil no hay a dónde volver. */}
       {location.protocol !== "file:" && (
         <a className="auth__back" href="../">
-          <Icon name="atras" size={18} /> Volver a la página de Surtido
+          <Icon name="atras" size={18} /> Volver a la página de Surti2
         </a>
       )}
       <section className="auth__card">
-        <div className="auth__brand">
-          <svg className="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M5 12h22l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
-            <path d="M11 12V9a5 5 0 0 1 10 0v3" fill="none" />
-          </svg>
-          surtido
+        <div className="auth__brand" aria-label="Surti2">
+          Surti<span className="brand__dos" aria-hidden="true">2</span>
         </div>
         <h1>{title}</h1>
         <p className="muted">{subtitle}</p>

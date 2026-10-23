@@ -1,28 +1,29 @@
-/* Páginas de Privacidad y Términos. */
-@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-display: swap; font-weight: 200 800; src: url("../fonts/bricolage.woff2") format("woff2-variations"); }
-@font-face { font-family: "Instrument Sans"; font-style: normal; font-display: swap; font-weight: 400; src: url("../fonts/instrument-400.woff2") format("woff2"); }
-@font-face { font-family: "Instrument Sans"; font-style: normal; font-display: swap; font-weight: 600; src: url("../fonts/instrument-600.woff2") format("woff2"); }
-:root { --bg: #eef3f0; --card: #ffffff; --ink: #15201b; --muted: #55615b; --line: #dce3df; --accent: #0b6e4f; --display: "Bricolage Grotesque", "Arial Narrow", sans-serif; --body: "Instrument Sans", system-ui, sans-serif; color-scheme: light dark; }
-@media (prefers-color-scheme: dark) { :root { --bg: #0f1613; --card: #16201c; --ink: #e7eeea; --muted: #9aa8a1; --line: #27342e; --accent: #3fbf8f; } }
+/* Páginas de Privacidad y Términos */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("../fonts/plex-400.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("../fonts/plex-600.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 700; font-display: swap; src: url("../fonts/plex-700.woff2") format("woff2"); }
+:root { --bg: #f3f5f7; --card: #ffffff; --ink: #17212b; --muted: #586574; --line: #e1e6eb; --accent: #1d4f80; --body: "IBM Plex Sans", system-ui, sans-serif; color-scheme: light; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.65 var(--body); }
 a { color: var(--accent); text-underline-offset: 0.15em; }
-.legal-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; max-width: 760px; margin: 0 auto; padding: 1.25rem 16px; }
-.legal-marca { font: 700 1.35rem var(--display); color: var(--ink); text-decoration: none; }
-.legal-top nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.1rem; font-size: 0.95rem; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legal-top { border-bottom: 1px solid var(--line); background: var(--card); }
+.legal-top > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; max-width: 760px; margin: 0 auto; padding: 0.9rem 16px; }
+.legal-marca { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
+.legal-marca span { color: var(--accent); }
+.legal-top nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; font-size: 0.95rem; }
 .legal-top nav a { color: var(--muted); text-decoration: none; }
 .legal-top nav a[aria-current="page"] { color: var(--ink); font-weight: 600; }
-.legal-top nav a.legal-app { color: var(--bg); background: var(--ink); padding: 0.45rem 0.9rem; border-radius: 999px; font-weight: 600; }
-.legal { max-width: 760px; margin: 0 auto 4rem; padding: 2rem clamp(16px, 5vw, 3rem) 2.5rem; background: var(--card); border: 1px solid var(--line); border-radius: 20px; }
-@media (max-width: 600px) { .legal { border-radius: 0; border-inline: 0; } }
-.legal h1 { margin: 0.25rem 0 1rem; line-height: 1.05; }
-.legal h2 { margin: 2.25rem 0 0.5rem; line-height: 1.2; }
+.legal-top nav a.legal-app { color: #fff; background: var(--accent); padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: 600; }
+.legal { max-width: 760px; margin: 2rem auto 4rem; padding: 2rem clamp(16px, 5vw, 3rem) 2.5rem; border: 1px solid var(--line); background: var(--card); border-radius: 10px; }
+@media (max-width: 600px) { .legal { margin-top: 0; border: 0; border-radius: 0; } }
+.legal h1 { margin: 0.25rem 0 1rem; font-size: clamp(1.9rem, 5vw, 2.4rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.legal h2 { margin: 2.25rem 0 0.5rem; font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
 .legal p, .legal li { max-width: 68ch; }
 .legal ul { padding-left: 1.25rem; }
 .legal li { margin: 0.35rem 0; }
 .legal .lead { font-size: 1.1rem; color: var(--muted); }
 .legal-fecha { margin: 0; color: var(--muted); font-size: 0.9rem; }
 .legal-fin { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--muted); }
-.legal h1, .legal h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; } .legal h1 { font-size: clamp(2rem, 6vw, 2.8rem); } .legal h2 { font-size: 1.3rem; }

@@ -1,4 +1,4 @@
-# Surtido
+# Surti2
 
 Punto de venta para tiendas de barrio: registrar ventas, llevar el inventario, el fiado de los clientes y cuadrar la caja desde el celular. Sigue funcionando cuando se va el internet.
 

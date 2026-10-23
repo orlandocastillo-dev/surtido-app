@@ -155,7 +155,7 @@ export function Ajustes() {
         </>
       )}
 
-      <p className="muted small center">Surtido 1.1. Proyecto de portafolio de Orlando Castillo.</p>
+      <p className="muted small center">Surti2 1.2. Proyecto de portafolio de Orlando Castillo.</p>
 
       <PasswordDialog open={changingPassword} onClose={() => setChangingPassword(false)} />
 

@@ -44,7 +44,7 @@ export function serializeBackup(state: RootState): string {
 export function parseBackup(text: string): BusinessState {
   const data = JSON.parse(text) as Partial<Saved>;
   if (data.version !== VERSION || !data.state?.products || !data.state.sales) {
-    throw new Error("El archivo no es una copia de seguridad válida de Surtido.");
+    throw new Error("El archivo no es una copia de seguridad válida de Surti2.");
   }
   const { auth: _auth, nube: _nube, ...business } = data.state;
   void _auth;

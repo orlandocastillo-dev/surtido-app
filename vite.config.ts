@@ -18,12 +18,12 @@ export default defineConfig(({ mode }) => {
             registerType: "autoUpdate",
             includeAssets: ["favicon.svg"],
             manifest: {
-              name: "Surtido: ventas, inventario y fiado",
-              short_name: "Surtido",
+              name: "Surti2: ventas, inventario y fiado",
+              short_name: "Surti2",
               description: "La app de la tienda de barrio. Funciona sin internet.",
               lang: "es-CO",
-              theme_color: "#0b6e4f",
-              background_color: "#f2f5f3",
+              theme_color: "#ffffff",
+              background_color: "#f3f5f7",
               display: "standalone",
               start_url: ".",
               icons: [

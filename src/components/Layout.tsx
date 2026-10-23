@@ -49,12 +49,10 @@ export function Layout() {
     <div className="shell">
       <header className="topbar">
         <div className="brand">
-          <svg className="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M5 12h22l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
-            <path d="M11 12V9a5 5 0 0 1 10 0v3" fill="none" />
-          </svg>
           <div>
-            <p className="brand__name">surtido</p>
+            <p className="brand__name" aria-label="Surti2">
+              Surti<span className="brand__dos" aria-hidden="true">2</span>
+            </p>
             <p className="brand__store">{storeName}</p>
           </div>
         </div>

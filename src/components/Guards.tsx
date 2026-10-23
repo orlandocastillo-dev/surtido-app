@@ -37,11 +37,7 @@ function Abriendo() {
   return (
     <main className="auth" aria-busy="true">
       <div className="auth__brand auth__brand--carga">
-        <svg className="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M5 12h22l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
-          <path d="M11 12V9a5 5 0 0 1 10 0v3" fill="none" />
-        </svg>
-        surtido
+        Surti<span className="brand__dos" aria-hidden="true">2</span>
       </div>
       <p className="auth__note">Abriendo tu tienda…</p>
     </main>
