@@ -333,16 +333,23 @@ a {
   font-size: 0.925rem;
 }
 
-/* La venta de la portada, como se ve en la app */
+/* La venta de la portada: main.js la arma paso a paso y al final le pone .is-lista */
+
+.hero__visual {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
 
 .venta {
+  position: relative;
   width: min(100%, 420px);
-  justify-self: center;
   padding: 1.35rem 1.4rem 1.4rem;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
   box-shadow: 0 1px 2px rgb(23 33 43 / 0.06), 0 16px 40px -20px rgb(23 33 43 / 0.25);
+  overflow: hidden;
 }
 
 .venta__head {
@@ -393,8 +400,10 @@ a {
   padding: 0.7rem 0;
   border-bottom: 1px solid var(--line);
   font-weight: 500;
-  animation: linea 0.35s ease-out both;
-  animation-delay: calc(0.25s + var(--i) * 0.22s);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out,
+    background-color 0.6s;
 }
 
 .venta__lineas small {
@@ -408,11 +417,18 @@ a {
   font-weight: 600;
 }
 
-@keyframes linea {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
+/* Mientras se arma, las líneas que faltan esperan escondidas; la recién agregada se ilumina un momento */
+.js .venta:not(.is-lista) li:not(.is-dentro) {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.venta li.is-nueva {
+  background: var(--azul-suave);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out,
+    background-color 0s;
 }
 
 .venta__total {
@@ -441,12 +457,22 @@ a {
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .venta__pagos .is-on {
   border-color: var(--azul);
   background: var(--azul-suave);
   color: var(--azul);
+}
+
+.js .venta:not(.is-lista):not(.is-pagando) .venta__pagos .is-on {
+  border-color: var(--line-strong);
+  background: none;
+  color: inherit;
 }
 
 .venta__cobrar {
@@ -457,12 +483,82 @@ a {
   color: #fff;
   font-weight: 600;
   text-align: center;
+  transition:
+    transform 0.12s,
+    background-color 0.12s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .venta__lineas li {
-    animation: none;
-  }
+.venta.is-cobrando .venta__cobrar {
+  background: var(--azul-fuerte);
+  transform: scale(0.97);
+}
+
+/* Confirmación que tapa la venta al cobrar */
+.venta__hecha {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 2rem;
+  background: rgb(255 255 255 / 0.97);
+  color: var(--muted);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+}
+
+.venta__hecha svg {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.5rem;
+  padding: 12px;
+  border-radius: 50%;
+  background: var(--verde);
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.venta__hecha svg path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.4s 0.15s ease-out;
+}
+
+.venta__hecha-titulo {
+  color: var(--ink);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.venta.is-hecha .venta__hecha {
+  opacity: 1;
+  visibility: visible;
+}
+
+.venta.is-hecha .venta__hecha svg path {
+  stroke-dashoffset: 0;
+}
+
+.venta__repetir {
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border: 0;
+  background: none;
+  color: var(--azul);
+  font: 600 0.95rem var(--font);
+  cursor: pointer;
+}
+
+.venta__repetir:hover {
+  text-decoration: underline;
 }
 
 /* Secciones */

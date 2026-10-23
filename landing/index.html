@@ -58,24 +58,32 @@
             <p class="hero__note">Gratis y sin descargar nada: abre en el navegador del celular o del computador.</p>
           </div>
 
-          <!-- Una venta como se ve en la app; las líneas entran una por una al cargar -->
-          <figure class="venta" role="img" aria-label="Venta de leche, pan, huevos y café por $40.600, pagada con Nequi">
-            <div class="venta__head">
-              <p class="venta__titulo">Venta actual</p>
-              <p class="venta__caja">Caja abierta</p>
-            </div>
-            <ul class="venta__lineas">
-              <li style="--i: 0"><span>Leche entera 1 L<small>2 × $4.200</small></span><span>$8.400</span></li>
-              <li style="--i: 1"><span>Pan tajado 500 g<small>1 × $6.900</small></span><span>$6.900</span></li>
-              <li style="--i: 2"><span>Huevos AA × 12<small>1 × $13.500</small></span><span>$13.500</span></li>
-              <li style="--i: 3"><span>Café molido 250 g<small>1 × $11.800</small></span><span>$11.800</span></li>
-            </ul>
-            <p class="venta__total"><span>Total</span><strong>$40.600</strong></p>
-            <div class="venta__pagos" aria-hidden="true">
-              <span>Efectivo</span><span class="is-on">Nequi</span><span>Daviplata</span><span>Fiado</span>
-            </div>
-            <p class="venta__cobrar">Cobrar $40.600</p>
-          </figure>
+          <!-- Una venta completa como se hace en la app: se agregan los productos, se elige el pago y se cobra -->
+          <div class="hero__visual">
+            <figure class="venta" data-venta role="img" aria-label="Venta de leche, pan, huevos y café por $40.600, pagada con Nequi">
+              <div class="venta__head">
+                <p class="venta__titulo">Venta actual</p>
+                <p class="venta__caja">Caja abierta</p>
+              </div>
+              <ul class="venta__lineas">
+                <li data-valor="8400"><span>Leche entera 1 L<small>2 × $4.200</small></span><span>$8.400</span></li>
+                <li data-valor="6900"><span>Pan tajado 500 g<small>1 × $6.900</small></span><span>$6.900</span></li>
+                <li data-valor="13500"><span>Huevos AA × 12<small>1 × $13.500</small></span><span>$13.500</span></li>
+                <li data-valor="11800"><span>Café molido 250 g<small>1 × $11.800</small></span><span>$11.800</span></li>
+              </ul>
+              <p class="venta__total"><span>Total</span><strong data-total>$40.600</strong></p>
+              <div class="venta__pagos">
+                <span>Efectivo</span><span class="is-on" data-pago>Nequi</span><span>Daviplata</span><span>Fiado</span>
+              </div>
+              <p class="venta__cobrar">Cobrar <span data-total>$40.600</span></p>
+              <div class="venta__hecha">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+                <p class="venta__hecha-titulo">Venta 1284 guardada</p>
+                <p>Pagó $40.600 con Nequi. El inventario ya se descontó.</p>
+              </div>
+            </figure>
+            <button class="venta__repetir" type="button" data-repetir hidden>Ver la venta otra vez</button>
+          </div>
         </div>
       </section>
 
