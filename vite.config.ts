@@ -22,8 +22,8 @@ export default defineConfig(({ mode }) => {
               short_name: "Surti2",
               description: "La app de la tienda de barrio. Funciona sin internet.",
               lang: "es-CO",
-              theme_color: "#ffffff",
-              background_color: "#f3f5f7",
+              theme_color: "#17130f",
+              background_color: "#f6f4f0",
               display: "standalone",
               start_url: ".",
               icons: [
