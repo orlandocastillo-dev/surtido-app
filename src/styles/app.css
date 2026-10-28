@@ -1,4 +1,4 @@
-/* Surti2: estilos de la app. Papel cálido, carbón y mandarina; los precios en letra de caja registradora.
+/* Surti2: estilos de la app. Papel cálido, carbón y mandarina; letra Onest y los precios en DM Mono, como un recibo.
    Móvil primero: pestañas abajo en el celular, lateral en escritorio. */
 
 :root {
@@ -25,9 +25,9 @@
   --verde: #2f7d4f;
   --verde-soft: #e8f3ec;
 
-  --font: "Geist Variable", system-ui, sans-serif;
-  --display: "Geist Variable", system-ui, sans-serif;
-  --mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font: "Onest Variable", system-ui, sans-serif;
+  --display: "Onest Variable", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, monospace;
 
   --radius: 12px;
   --radius-sm: 9px;
@@ -111,6 +111,14 @@ a {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   white-space: nowrap;
+}
+
+/* DM Mono llega hasta 500: sin negrita falsa en los precios */
+.money,
+.stat__value,
+.fav__price,
+.money-input {
+  font-synthesis-weight: none;
 }
 
 /* Botones y controles */

@@ -1,6 +1,6 @@
 /* Páginas de Privacidad y Términos */
-@font-face { font-family: "Geist"; font-weight: 100 900; font-display: swap; src: url("../fonts/geist.woff2") format("woff2"); }
-:root { --bg: #f6f4f0; --card: #ffffff; --ink: #1c1814; --muted: #6b645b; --line: #e7e1d8; --accent: #d9480f; --body: "Geist", system-ui, sans-serif; color-scheme: light; }
+@font-face { font-family: "Onest"; font-weight: 100 900; font-display: swap; src: url("../fonts/onest.woff2") format("woff2"); }
+:root { --bg: #f6f4f0; --card: #ffffff; --ink: #1c1814; --muted: #6b645b; --line: #e7e1d8; --accent: #d9480f; --body: "Onest", system-ui, sans-serif; color-scheme: light; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }

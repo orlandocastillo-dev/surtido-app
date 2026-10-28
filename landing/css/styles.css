@@ -1,16 +1,16 @@
-/* Surti2: página de presentación. Carbón, papel y mandarina, con la misma letra de la app (Geist) y los precios en Geist Mono. */
+/* Surti2: página de presentación. Carbón, papel y mandarina, con la misma letra de la app (Onest) y los precios en DM Mono. */
 
 @font-face {
-  font-family: "Geist";
+  font-family: "Onest";
   font-weight: 100 900;
   font-display: swap;
-  src: url("../fonts/geist.woff2") format("woff2");
+  src: url("../fonts/onest.woff2") format("woff2");
 }
 @font-face {
-  font-family: "Geist Mono";
-  font-weight: 100 900;
+  font-family: "DM Mono";
+  font-weight: 500;
   font-display: swap;
-  src: url("../fonts/geist-mono.woff2") format("woff2");
+  src: url("../fonts/dm-mono.woff2") format("woff2");
 }
 
 :root {
@@ -28,8 +28,8 @@
   --en-carbon: #b9b0a4;
   --verde: #2f7d4f;
   --rojo: #c0362c;
-  --font: "Geist", system-ui, sans-serif;
-  --mono: "Geist Mono", ui-monospace, monospace;
+  --font: "Onest", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, monospace;
   color-scheme: light;
 }
 
