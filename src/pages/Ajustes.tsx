@@ -411,8 +411,8 @@ function Seguridad() {
         <h2 className="section-title">Sesiones abiertas</h2>
         <p className="muted small">Si perdiste un celular o entraste en un equipo ajeno, cierra la sesión en todos lados. Tendrás que volver a entrar aquí también.</p>
         {error && <p className="form-error small">{error}</p>}
-        <p className="muted small">
-          <a href="../privacidad.html">Política de privacidad</a> · <a href="../terminos.html">Términos</a>
+        <p className="muted small auth__legal" style={{ justifyContent: "flex-start" }}>
+          <a href="../privacidad.html">Política de privacidad</a> <a href="../terminos.html">Términos</a>
         </p>
       </div>
       <button

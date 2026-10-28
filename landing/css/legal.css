@@ -1,8 +1,6 @@
 /* Páginas de Privacidad y Términos */
-@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("../fonts/plex-400.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("../fonts/plex-600.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Sans"; font-weight: 700; font-display: swap; src: url("../fonts/plex-700.woff2") format("woff2"); }
-:root { --bg: #f3f5f7; --card: #ffffff; --ink: #17212b; --muted: #586574; --line: #e1e6eb; --accent: #1d4f80; --body: "IBM Plex Sans", system-ui, sans-serif; color-scheme: light; }
+@font-face { font-family: "Geist"; font-weight: 100 900; font-display: swap; src: url("../fonts/geist.woff2") format("woff2"); }
+:root { --bg: #f6f4f0; --card: #ffffff; --ink: #1c1814; --muted: #6b645b; --line: #e7e1d8; --accent: #d9480f; --body: "Geist", system-ui, sans-serif; color-scheme: light; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -12,7 +10,7 @@ a { color: var(--accent); text-underline-offset: 0.15em; }
 .legal-top { border-bottom: 1px solid var(--line); background: var(--card); }
 .legal-top > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; max-width: 760px; margin: 0 auto; padding: 0.9rem 16px; }
 .legal-marca { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
-.legal-marca span { color: var(--accent); }
+.legal-marca span { margin-left: 2px; padding: 0 0.22em; border-radius: 0.2em; background: var(--accent); color: #fff; font-size: 0.86em; }
 .legal-top nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; font-size: 0.95rem; }
 .legal-top nav a { color: var(--muted); text-decoration: none; }
 .legal-top nav a[aria-current="page"] { color: var(--ink); font-weight: 600; }

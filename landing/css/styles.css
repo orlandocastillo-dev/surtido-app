@@ -1,43 +1,35 @@
-/* Surti2: página de presentación. Sobria, con la misma letra y colores de la app. */
+/* Surti2: página de presentación. Carbón, papel y mandarina, con la misma letra de la app (Geist) y los precios en Geist Mono. */
 
 @font-face {
-  font-family: "IBM Plex Sans";
-  font-weight: 400;
+  font-family: "Geist";
+  font-weight: 100 900;
   font-display: swap;
-  src: url("../fonts/plex-400.woff2") format("woff2");
+  src: url("../fonts/geist.woff2") format("woff2");
 }
 @font-face {
-  font-family: "IBM Plex Sans";
-  font-weight: 500;
+  font-family: "Geist Mono";
+  font-weight: 100 900;
   font-display: swap;
-  src: url("../fonts/plex-500.woff2") format("woff2");
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-weight: 600;
-  font-display: swap;
-  src: url("../fonts/plex-600.woff2") format("woff2");
-}
-@font-face {
-  font-family: "IBM Plex Sans";
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/plex-700.woff2") format("woff2");
+  src: url("../fonts/geist-mono.woff2") format("woff2");
 }
 
 :root {
-  --bg: #f3f5f7;
+  --bg: #f6f4f0;
   --surface: #ffffff;
-  --ink: #17212b;
-  --muted: #586574;
-  --line: #e1e6eb;
-  --line-strong: #c6ced7;
-  --azul: #1d4f80;
-  --azul-fuerte: #163d63;
-  --azul-suave: #e9f0f7;
-  --verde: #12784a;
-  --rojo: #b42318;
-  --font: "IBM Plex Sans", system-ui, sans-serif;
+  --ink: #1c1814;
+  --muted: #6b645b;
+  --line: #e7e1d8;
+  --line-strong: #d6cec2;
+  --azul: #d9480f;
+  --azul-fuerte: #b53a0a;
+  --azul-suave: #fdeee5;
+  --carbon: #17130f;
+  --carbon-2: #231e19;
+  --en-carbon: #b9b0a4;
+  --verde: #2f7d4f;
+  --rojo: #c0362c;
+  --font: "Geist", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
   color-scheme: light;
 }
 
@@ -59,7 +51,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--surface);
+  background: var(--bg);
   color: var(--ink);
   font: 400 1.0625rem/1.6 var(--font);
   font-variant-numeric: tabular-nums;
@@ -80,7 +72,7 @@ h1,
 h2,
 h3 {
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -131,7 +123,7 @@ a {
   min-height: 44px;
   padding: 0 1.1rem;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 10px;
   font: 600 0.975rem/1.2 var(--font);
   text-decoration: none;
   cursor: pointer;
@@ -159,6 +151,20 @@ a {
   color: var(--ink);
 }
 
+.hero .btn--line {
+  border-color: rgb(255 255 255 / 0.18);
+  background: rgb(255 255 255 / 0.04);
+  color: #fff;
+}
+
+.hero .btn--line:hover {
+  border-color: rgb(255 255 255 / 0.4);
+}
+
+.btn--primary {
+  box-shadow: 0 10px 30px -12px rgb(217 72 15 / 0.7);
+}
+
 .btn--line:hover {
   border-color: var(--ink);
 }
@@ -166,7 +172,7 @@ a {
 /* Barra de arriba */
 
 .logo {
-  color: var(--ink);
+  color: inherit;
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -174,16 +180,22 @@ a {
 }
 
 .logo__dos {
-  color: var(--azul);
+  margin-left: 2px;
+  padding: 0 0.22em;
+  border-radius: 0.2em;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.86em;
 }
 
 .nav {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid var(--line);
-  background: rgb(255 255 255 / 0.94);
-  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+  background: rgb(23 19 15 / 0.96);
+  backdrop-filter: blur(14px) saturate(140%);
+  color: #fff;
 }
 
 .nav__inner {
@@ -200,14 +212,14 @@ a {
 }
 
 .nav__links a {
-  color: var(--muted);
+  color: var(--en-carbon);
   font-size: 0.95rem;
   font-weight: 500;
   text-decoration: none;
 }
 
 .nav__links a:hover {
-  color: var(--ink);
+  color: #fff;
 }
 
 .nav__actions {
@@ -221,9 +233,9 @@ a {
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  background: var(--surface);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 10px;
+  background: none;
   cursor: pointer;
 }
 
@@ -233,7 +245,7 @@ a {
   width: 18px;
   height: 2px;
   margin: 0 auto;
-  background: var(--ink);
+  background: #fff;
 }
 
 .nav__burger span[aria-hidden]::before,
@@ -243,7 +255,7 @@ a {
   left: 0;
   width: 18px;
   height: 2px;
-  background: var(--ink);
+  background: #fff;
 }
 
 .nav__burger span[aria-hidden]::before {
@@ -277,7 +289,7 @@ a {
   }
   .nav__links a {
     padding: 0.7rem 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid rgb(255 255 255 / 0.08);
     font-size: 1rem;
   }
 }
@@ -291,9 +303,45 @@ a {
 /* Portada */
 
 .hero {
-  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(3rem, 7vw, 5rem);
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(4rem, 9vw, 7.5rem) 0 clamp(4rem, 9vw, 7rem);
+  background: var(--carbon);
+  color: #fff;
+}
+
+/* Luz cálida que se mueve despacio detrás del texto */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto auto;
+  z-index: -1;
+  width: 70vw;
+  height: 70vw;
+  max-width: 900px;
+  max-height: 900px;
+  background: radial-gradient(closest-side, rgb(217 72 15 / 0.42), rgb(217 72 15 / 0.12) 55%, transparent);
+  filter: blur(20px);
+  animation: luz 14s ease-in-out infinite alternate;
+}
+
+/* Grano de papel */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes luz {
+  to {
+    transform: translate(-12vw, 10vh) scale(1.15);
+  }
 }
 
 .hero__grid {
@@ -310,14 +358,21 @@ a {
 }
 
 .hero h1 {
-  font-size: clamp(2.3rem, 5vw, 3.6rem);
-  line-height: 1.08;
+  font-size: clamp(2.5rem, 5.6vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: #ff8a4c;
 }
 
 .hero__lead {
   max-width: 34rem;
-  margin: 1.25rem 0 2rem;
-  color: var(--muted);
+  margin: 1.5rem 0 2.25rem;
+  color: var(--en-carbon);
   font-size: 1.15rem;
 }
 
@@ -328,8 +383,8 @@ a {
 }
 
 .hero__note {
-  margin-top: 1rem;
-  color: var(--muted);
+  margin-top: 1.1rem;
+  color: #8c8378;
   font-size: 0.925rem;
 }
 
@@ -339,17 +394,36 @@ a {
   display: grid;
   justify-items: center;
   gap: 0.75rem;
+  perspective: 1400px;
 }
 
 .venta {
   position: relative;
   width: min(100%, 420px);
-  padding: 1.35rem 1.4rem 1.4rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  padding: 1.35rem 1.4rem 1.6rem;
+  border-radius: 16px;
   background: var(--surface);
-  box-shadow: 0 1px 2px rgb(23 33 43 / 0.06), 0 16px 40px -20px rgb(23 33 43 / 0.25);
+  color: var(--ink);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.5) inset,
+    0 40px 80px -30px rgb(0 0 0 / 0.75),
+    0 0 0 1px rgb(255 255 255 / 0.06);
   overflow: hidden;
+  transform: rotateY(-9deg) rotateX(4deg) rotate(1deg);
+  animation: flotar 7s ease-in-out infinite;
+}
+
+@keyframes flotar {
+  50% {
+    transform: rotateY(-6deg) rotateX(3deg) rotate(0.5deg) translateY(-10px);
+  }
+}
+
+@media (max-width: 900px) {
+  .venta {
+    transform: none;
+    animation: none;
+  }
 }
 
 .venta__head {
@@ -362,7 +436,8 @@ a {
 }
 
 .venta__titulo {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
   font-weight: 600;
 }
 
@@ -413,6 +488,13 @@ a {
   font-weight: 400;
 }
 
+.venta__lineas li span:last-child,
+.cuaderno li span:last-child,
+.venta__total strong {
+  font-family: var(--mono);
+  letter-spacing: -0.03em;
+}
+
 .venta__lineas li span:last-child {
   font-weight: 600;
 }
@@ -440,9 +522,8 @@ a {
 }
 
 .venta__total strong {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 2.1rem;
+  font-weight: 600;
 }
 
 .venta__pagos {
@@ -454,7 +535,7 @@ a {
 .venta__pagos span {
   padding: 0.4rem 0.75rem;
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
   transition:
@@ -477,8 +558,8 @@ a {
 
 .venta__cobrar {
   margin-top: 1rem;
-  padding: 0.85rem;
-  border-radius: 6px;
+  padding: 0.9rem;
+  border-radius: 10px;
   background: var(--azul);
   color: #fff;
   font-weight: 600;
@@ -552,7 +633,7 @@ a {
   padding: 0 0.75rem;
   border: 0;
   background: none;
-  color: var(--azul);
+  color: #ff8a4c;
   font: 600 0.95rem var(--font);
   cursor: pointer;
 }
@@ -570,8 +651,8 @@ a {
 .section__title {
   max-width: 40rem;
   margin-bottom: 2.5rem;
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
-  line-height: 1.15;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
 }
 
 /* Un día en la tienda */
@@ -607,8 +688,13 @@ a {
   display: grid;
   grid-template-columns: 7.5rem 1fr;
   gap: 1.5rem;
-  padding: 1.25rem 0;
+  padding: 1.4rem 0;
   border-top: 1px solid var(--line);
+}
+
+.dia li:hover .hora {
+  background: var(--azul);
+  color: #fff;
 }
 
 .dia li:last-child {
@@ -616,9 +702,16 @@ a {
 }
 
 .hora {
-  color: var(--azul);
-  font-weight: 600;
+  justify-self: start;
+  align-self: start;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  background: var(--azul-suave);
+  color: var(--azul-fuerte);
+  font: 500 0.9rem/1.5 var(--mono);
+  letter-spacing: -0.02em;
   white-space: nowrap;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .dia h3 {
@@ -640,9 +733,9 @@ a {
 /* Fiado */
 
 .fiado {
-  padding: clamp(3.5rem, 8vw, 6rem) 0;
-  border-block: 1px solid var(--line);
-  background: var(--bg);
+  padding: clamp(4rem, 9vw, 7rem) 0;
+  background: var(--carbon);
+  color: #fff;
 }
 
 .fiado__grid {
@@ -660,13 +753,13 @@ a {
 
 .fiado h2 {
   margin-bottom: 1rem;
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
-  line-height: 1.15;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
 }
 
 .fiado__texto p {
   max-width: 32rem;
-  color: var(--muted);
+  color: var(--en-carbon);
 }
 
 .fiado__texto p + p {
@@ -674,9 +767,10 @@ a {
 }
 
 .cuaderno {
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 16px;
   background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 40px 80px -36px rgb(0 0 0 / 0.8);
   overflow: hidden;
 }
 
@@ -730,7 +824,7 @@ a {
 .hecha {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2.25rem 3rem;
+  gap: 1rem;
 }
 
 @media (max-width: 860px) {
@@ -746,8 +840,22 @@ a {
 }
 
 .hecha div {
-  padding-top: 1rem;
-  border-top: 2px solid var(--ink);
+  position: relative;
+  padding: 1.4rem 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(28 24 20 / 0.04);
+}
+
+.hecha div::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-bottom: 1rem;
+  border-radius: 3px;
+  background: var(--azul);
 }
 
 .hecha dt {
@@ -764,6 +872,7 @@ a {
 
 .section--pared {
   border-top: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .faq {
@@ -837,13 +946,21 @@ a {
   .faq__item button::after {
     transition: none;
   }
+  .hero::before,
+  .venta {
+    animation: none;
+  }
 }
 
 /* Cierre y pie */
 
 .cierre {
-  padding: clamp(3rem, 7vw, 4.5rem) 0;
-  background: var(--azul);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(4rem, 9vw, 6.5rem) 0;
+  background:
+    radial-gradient(60% 120% at 85% 50%, rgb(217 72 15 / 0.38), transparent 70%),
+    var(--carbon);
   color: #fff;
 }
 
@@ -856,13 +973,14 @@ a {
 }
 
 .cierre h2 {
-  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
-  line-height: 1.2;
+  max-width: 22ch;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
 }
 
 .cierre .btn--primary {
   background: #fff;
-  color: var(--azul);
+  color: var(--ink);
 }
 
 .cierre .btn--primary:hover {
@@ -874,9 +992,10 @@ a {
 }
 
 .footer {
-  padding: 2rem 0;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
+  padding: 2.5rem 0;
+  background: var(--carbon);
+  color: #8c8378;
+  border-top: 1px solid rgb(255 255 255 / 0.06);
   font-size: 0.925rem;
 }
 
@@ -889,6 +1008,7 @@ a {
 }
 
 .logo--chico {
+  color: #fff;
   font-size: 1.15rem;
 }
 
@@ -899,7 +1019,7 @@ a {
 }
 
 .footer nav a {
-  color: var(--ink);
+  color: #e8e1d7;
   text-decoration: none;
 }
 

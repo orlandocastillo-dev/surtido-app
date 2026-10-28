@@ -59,7 +59,7 @@ export function Layout() {
         <div className="topbar__right">
           {nube.modo === "nube" && (!nube.enLinea || nube.pendientes > 0) && (
             <NavLink to="/ajustes" className={`sync-pill ${nube.enLinea ? "is-uploading" : "is-offline"}`} title="Estado de la nube">
-              {nube.enLinea ? `Subiendo ${nube.pendientes}` : nube.pendientes ? `Sin internet · ${nube.pendientes} por subir` : "Sin internet"}
+              {nube.enLinea ? `Subiendo ${nube.pendientes}` : nube.pendientes ? `Sin internet, ${nube.pendientes} por subir` : "Sin internet"}
             </NavLink>
           )}
           <NavLink to="/caja" className={`shift-pill ${shift ? "is-open" : ""}`}>
@@ -79,6 +79,12 @@ export function Layout() {
       </header>
 
       <nav className="tabbar" aria-label="Principal" style={{ gridTemplateColumns: `repeat(${nav.length}, 1fr)` }}>
+        <div className="tabbar__marca" aria-hidden="true">
+          <p className="brand__name">
+            Surti<span className="brand__dos">2</span>
+          </p>
+          <p className="brand__store">{storeName}</p>
+        </div>
         {nav.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.to === "/"} className="tabbar__item">
             <span className="tabbar__icon">

@@ -1,33 +1,39 @@
-/* Surti2: estilos de la app. Sobrio, para trabajar todo el día detrás del mostrador.
+/* Surti2: estilos de la app. Papel cálido, carbón y mandarina; los precios en letra de caja registradora.
    Móvil primero: pestañas abajo en el celular, lateral en escritorio. */
 
 :root {
-  --bg: #f3f5f7;
+  --bg: #f6f4f0;
   --surface: #ffffff;
-  --ink: #17212b;
-  --muted: #586574;
-  --line: #e1e6eb;
-  --line-strong: #c6ced7;
-  /* Azul de la marca: botones, selección y enlaces */
-  --anil: #1d4f80;
-  --anil-strong: #163d63;
-  --anil-soft: #e9f0f7;
+  --ink: #1c1814;
+  --muted: #6b645b;
+  --faint: #9a9288;
+  --line: #ebe6de;
+  --line-strong: #d8d1c6;
+  /* Mandarina de la marca: botones, selección y enlaces */
+  --anil: #d9480f;
+  --anil-strong: #b53a0a;
+  --anil-soft: #fdeee5;
+  /* Carbón del menú y la barra de la venta */
+  --carbon: #17130f;
+  --carbon-2: #241f1a;
   /* Ámbar: solo para avisos (stock bajo, caja por cerrar) */
-  --amarillo: #c27803;
-  --amarillo-strong: #a15f00;
-  --amarillo-soft: #fdf3e1;
-  --rojo: #b42318;
-  --rojo-soft: #fdecea;
-  --verde: #12784a;
-  --verde-soft: #e5f4ec;
+  --amarillo: #b7791f;
+  --amarillo-strong: #975a16;
+  --amarillo-soft: #fdf5e6;
+  --rojo: #c0362c;
+  --rojo-soft: #fdeceb;
+  --verde: #2f7d4f;
+  --verde-soft: #e8f3ec;
 
-  --font: "IBM Plex Sans", system-ui, sans-serif;
-  --display: "IBM Plex Sans", system-ui, sans-serif;
+  --font: "Geist Variable", system-ui, sans-serif;
+  --display: "Geist Variable", system-ui, sans-serif;
+  --mono: "Geist Mono Variable", ui-monospace, monospace;
 
-  --radius: 8px;
-  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-sm: 9px;
   --tabbar-h: 64px;
   --topbar-h: 60px;
+  --sombra: 0 1px 2px rgb(28 24 20 / 0.05), 0 8px 24px -16px rgb(28 24 20 / 0.18);
 
   color-scheme: light;
 }
@@ -101,7 +107,9 @@ a {
 }
 
 .money {
+  font-family: var(--mono);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
@@ -236,7 +244,7 @@ a {
   display: inline-flex;
   padding: 3px;
   border-radius: var(--radius);
-  background: #e7ebef;
+  background: #ece7df;
 }
 
 .segmented button {
@@ -315,6 +323,7 @@ a {
 }
 
 .money-input {
+  font-family: var(--mono) !important;
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -414,7 +423,12 @@ a {
 }
 
 .brand__dos {
-  color: var(--anil);
+  margin-left: 2px;
+  padding: 0 0.22em;
+  border-radius: 0.2em;
+  background: var(--anil);
+  color: #fff;
+  font-size: 0.86em;
 }
 
 .brand__store {
@@ -551,8 +565,8 @@ a {
 }
 
 .page-head h1 {
-  font: 600 2rem/1.05 var(--display);
-  letter-spacing: -0.01em;
+  font: 650 2rem/1.05 var(--display);
+  letter-spacing: -0.035em;
 }
 
 .page-head p {
@@ -575,17 +589,18 @@ a {
 }
 
 .section-title {
-  font: 600 1.3rem/1.15 var(--display);
-  letter-spacing: -0.01em;
+  font: 600 1.2rem/1.15 var(--display);
+  letter-spacing: -0.025em;
 }
 
 .card {
   display: grid;
   gap: 0.9rem;
-  padding: 1.1rem;
+  padding: 1.25rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: var(--sombra);
 }
 
 .card__head {
@@ -655,10 +670,11 @@ a {
 }
 
 .stat {
-  padding: 0.95rem 1rem 1rem;
+  padding: 1.1rem 1.2rem 1.15rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: var(--sombra);
 }
 
 .stat__label {
@@ -668,9 +684,9 @@ a {
 }
 
 .stat__value {
-  margin-top: 0.2rem;
-  font: 600 1.85rem/1.1 var(--display);
-  letter-spacing: -0.01em;
+  margin-top: 0.35rem;
+  font: 550 1.75rem/1.1 var(--mono);
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -704,7 +720,7 @@ a {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--anil);
+  background: #5b5248;
 }
 
 .meter.is-warn > span {
@@ -798,6 +814,8 @@ a {
 }
 
 .fav__price {
+  font-family: var(--mono);
+  letter-spacing: -0.03em;
   color: var(--ink);
   font-size: 1.05rem;
   font-weight: 600;
@@ -812,6 +830,7 @@ a {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: var(--sombra);
   overflow: hidden;
 }
 
@@ -885,15 +904,16 @@ a {
   min-height: 58px;
   padding: 0 1.1rem;
   border: 0;
-  border-radius: var(--radius);
-  background: var(--anil);
+  border-radius: 14px;
+  background: var(--carbon);
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 8px 24px -12px rgb(23 33 43 / 0.5);
+  box-shadow: 0 14px 30px -14px rgb(23 19 15 / 0.7);
   cursor: pointer;
 }
 
 .cart-bar .money {
+  color: #ffb489;
   font-size: 1.3rem;
   font-weight: 600;
 }
@@ -1017,8 +1037,8 @@ a {
 }
 
 .cart__total .money {
-  font-size: 2.2rem;
-  font-weight: 700;
+  font-size: 2.3rem;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -1436,8 +1456,8 @@ a {
 .chart__bar {
   width: min(100%, 44px);
   min-height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: #a9bfd6;
+  border-radius: 6px 6px 2px 2px;
+  background: #f2c5a8;
 }
 
 .chart__col.is-today .chart__bar {
@@ -1473,8 +1493,8 @@ a {
 }
 
 .bars__track {
-  height: 12px;
-  border-radius: 3px;
+  height: 10px;
+  border-radius: 99px;
   background: var(--anil-soft);
   overflow: hidden;
 }
@@ -1482,6 +1502,7 @@ a {
 .bars__track span {
   display: block;
   height: 100%;
+  border-radius: inherit;
   background: var(--anil);
 }
 
@@ -1587,30 +1608,63 @@ a {
 
 /* Escritorio */
 
+.tabbar__marca {
+  display: none;
+}
+
 @media (min-width: 900px) {
   .shell {
     display: grid;
-    grid-template-columns: 210px 1fr;
+    grid-template-columns: 236px minmax(0, 1fr);
     grid-template-rows: var(--topbar-h) 1fr;
     padding-bottom: 0;
   }
 
   .topbar {
-    grid-column: 1 / -1;
-    padding: 0 1rem 0 1.25rem;
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 1.5rem 0 2rem;
+    background: rgb(246 244 240 / 0.86);
+    backdrop-filter: blur(10px);
+  }
+
+  .topbar .brand__name {
+    display: none;
+  }
+
+  .topbar .brand__store {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 
   .tabbar {
+    grid-column: 1;
+    grid-row: 1 / span 2;
     position: sticky;
-    top: var(--topbar-h);
+    top: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    height: calc(100dvh - var(--topbar-h));
-    padding: 1.25rem 0.75rem 1rem;
-    border-top: 0;
-    border-right: 1px solid var(--line);
-    background: var(--surface);
+    gap: 2px;
+    height: 100dvh;
+    padding: 1.1rem 0.85rem 1rem;
+    border: 0;
+    background: var(--carbon);
+  }
+
+  .tabbar__marca {
+    display: block;
+    margin: 0 0.4rem 1.6rem;
+    color: #fff;
+  }
+
+  .tabbar__marca .brand__name {
+    font-size: 1.45rem;
+  }
+
+  .tabbar__marca .brand__store {
+    display: none;
   }
 
   .tabbar__item {
@@ -1620,28 +1674,37 @@ a {
     min-height: 42px;
     padding: 0.4rem 0.6rem;
     border-radius: var(--radius-sm);
-    color: var(--muted);
+    color: #b3aa9e;
     font-size: 0.95rem;
     font-weight: 500;
   }
 
   .tabbar__item:hover {
-    background: var(--bg);
-    color: var(--ink);
+    background: rgb(255 255 255 / 0.05);
+    color: #fff;
   }
 
   .tabbar__item.active {
-    background: var(--anil-soft);
-    color: var(--anil);
+    background: var(--carbon-2);
+    color: #fff;
     font-weight: 600;
   }
 
   .tabbar__item.active::before {
-    display: none;
+    display: block;
+    top: 10px;
+    bottom: 10px;
+    left: 0;
+    right: auto;
+    width: 3px;
+    height: auto;
+    border-radius: 0 3px 3px 0;
+    background: var(--anil);
   }
 
   .tabbar__item.active .tabbar__icon {
     background: none;
+    color: #ff8a4c;
   }
 
   .tabbar__icon {
@@ -1675,6 +1738,7 @@ a {
     inset: auto;
     display: flex;
     height: calc(100dvh - var(--topbar-h));
+    background: var(--surface);
     z-index: 20;
     padding: 1.6rem 1.35rem 1.5rem;
     border-left: 1px solid var(--line);
@@ -1790,7 +1854,9 @@ a {
   gap: 1rem;
   min-height: 100dvh;
   padding: 2.5rem 1rem 1.5rem;
-  background: var(--bg);
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgb(217 72 15 / 0.08), transparent 70%),
+    var(--bg);
 }
 
 
@@ -1802,7 +1868,7 @@ a {
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--line);
-  box-shadow: 0 1px 3px rgb(23 33 43 / 0.06);
+  box-shadow: var(--sombra);
 }
 
 .auth__brand {
@@ -1814,7 +1880,7 @@ a {
 }
 
 .auth__brand .brand__dos {
-  color: var(--anil);
+  color: #fff;
 }
 
 .auth__card h1 {
@@ -2111,6 +2177,9 @@ input.codigo::placeholder {
   accent-color: var(--anil);
 }
 .auth__legal {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
   margin: 0;
   font-size: 0.85rem;
   text-align: center;

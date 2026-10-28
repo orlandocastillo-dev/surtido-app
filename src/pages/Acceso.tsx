@@ -32,7 +32,7 @@ function AuthShell({ title, subtitle, children, footer, note }: { title: string;
       <p className="auth__note">{note ?? (nubeDisponible() ? NOTA_NUBE : NOTA_LOCAL)}</p>
       {location.protocol !== "file:" && (
         <p className="auth__legal">
-          <a href="../privacidad.html">Privacidad</a> · <a href="../terminos.html">Términos</a>
+          <a href="../privacidad.html">Privacidad</a> <a href="../terminos.html">Términos</a>
         </p>
       )}
     </main>
